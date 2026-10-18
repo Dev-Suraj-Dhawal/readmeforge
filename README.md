@@ -9,7 +9,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Architecture-100%25%20Edge%20Client--Side-00F0FF?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Edge Architecture" />
+  <a href="https://readme-gray-gamma.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Demo-readme--gray--gamma.vercel.app-00F0FF?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
   <img src="https://img.shields.io/badge/Scale-1M%2B%20Concurrent%20Ready-00FF66?style=for-the-badge&logo=speedtest&logoColor=black" alt="Scale Ready" />
   <img src="https://img.shields.io/badge/Tech-React%20%7C%20Vite%20%7C%20Tailwind%20v4-6366F1?style=for-the-badge&logo=react&logoColor=white" alt="Tech Stack" />
   <img src="https://img.shields.io/badge/License-MIT-F43F5E?style=for-the-badge" alt="MIT License" />
