@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ProfileConfig, BadgeStyle } from '../../types';
-import { TECH_BADGES, BADGE_CATEGORIES } from '../../data/techStackBadges';
-import { Cpu, Search, Check, X, Sparkles, Sliders } from 'lucide-react';
+import { TECH_BADGES, BADGE_CATEGORIES, getBadgeUrl } from '../../data/techStackBadges';
+import { Cpu, Search, Check, X, Sparkles, Sliders, Eye } from 'lucide-react';
 
 interface TechStackEditorProps {
   config: ProfileConfig;
@@ -145,27 +145,56 @@ export const TechStackEditor: React.FC<TechStackEditorProps> = ({ config, onChan
         </div>
       </div>
 
-      {/* Selected badges preview list */}
+      {/* Selected badges preview & live rendered shields */}
       {config.techBadges.length > 0 && (
-        <div className="p-3 rounded-2xl bg-slate-950/50 border border-slate-800 space-y-2">
-          <span className="text-[11px] font-mono text-slate-400 block">Selected Order:</span>
-          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+        <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono text-cyan-300 font-semibold flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Live Visual Shields.io Preview ({config.techBadges.length} Active):</span>
+            </span>
+            <span className="text-[10px] text-slate-500 font-mono">Style: {config.badgeStyle}</span>
+          </div>
+
+          {/* Visual rendered images */}
+          <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-[#0d1117] border border-[#30363d] min-h-[44px] items-center">
             {config.techBadges.map((id) => {
               const badge = TECH_BADGES.find((b) => b.id === id);
               if (!badge) return null;
               return (
-                <span
+                <img
                   key={id}
-                  onClick={() => toggleBadge(id)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 text-slate-200 text-xs hover:bg-red-950/50 hover:text-red-300 hover:border-red-500/40 border border-slate-700 cursor-pointer transition group"
-                  title="Click to remove"
-                >
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: `#${badge.bgColor}` }} />
-                  <span>{badge.name}</span>
-                  <X className="w-3 h-3 text-slate-400 group-hover:text-red-400" />
-                </span>
+                  src={getBadgeUrl(badge, config.badgeStyle)}
+                  alt={badge.name}
+                  className="h-6 object-contain inline-block transition-transform hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
               );
             })}
+          </div>
+
+          {/* Click to reorder / remove chips */}
+          <div className="pt-2 border-t border-slate-800/80">
+            <span className="text-[10px] text-slate-400 block mb-1.5">Click tag to remove:</span>
+            <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
+              {config.techBadges.map((id) => {
+                const badge = TECH_BADGES.find((b) => b.id === id);
+                if (!badge) return null;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => toggleBadge(id)}
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-800/90 text-slate-300 text-[11px] hover:bg-red-950/60 hover:text-red-300 hover:border-red-500/40 border border-slate-700/80 cursor-pointer transition group"
+                    title="Click to remove"
+                  >
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: `#${badge.bgColor}` }} />
+                    <span>{badge.name}</span>
+                    <X className="w-3 h-3 text-slate-400 group-hover:text-red-400" />
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

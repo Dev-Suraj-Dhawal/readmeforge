@@ -83,10 +83,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Center Mode Switcher Tabs */}
-        <nav className="flex items-center p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium">
+        <nav className="flex items-center p-0.5 sm:p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium max-w-full overflow-x-auto">
           <button
             onClick={() => setActiveTab('editor')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
               activeTab === 'editor'
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('templates')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
               activeTab === 'templates'
                 ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-md shadow-purple-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -111,19 +111,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('simulator')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
               activeTab === 'simulator'
                 ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
             <GithubIcon className="w-3.5 h-3.5" />
-            <span>GitHub Profile</span>
+            <span>GitHub <span className="hidden sm:inline">Profile</span></span>
           </button>
 
           <button
             onClick={() => setActiveTab('raw')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
               activeTab === 'raw'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'

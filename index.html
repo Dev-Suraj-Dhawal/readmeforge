@@ -3,13 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>ReadmeForge — Next-Gen Aesthetic GitHub Profile Architect</title>
     <meta name="description" content="Design insane, aesthetic, animated GitHub profile READMEs with real-time GitHub simulation, dynamic widgets, badges, and instant markdown export." />
-    <!-- Preconnect Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#090d16" />
+
+    <!-- Open Graph / SEO -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ReadmeForge — Next-Gen Aesthetic GitHub Profile Architect" />
+    <meta property="og:description" content="Design crazy aesthetic GitHub profile READMEs with animated typing headers, 3D trophies, live stats, and GitHub simulation." />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <!-- DNS Prefetch for External Badge & Stats Providers (LCP boost) -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://img.shields.io" />
+    <link rel="dns-prefetch" href="https://readme-typing-svg.demolab.com" />
+    <link rel="dns-prefetch" href="https://github-readme-stats.vercel.app" />
+    <link rel="dns-prefetch" href="https://komarev.com" />
+
+    <!-- Preconnect Fonts with display=swap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Critical CSS for instant paint without layout shifts -->
+    <style>
+      html, body {
+        background-color: #090d16;
+        color: #f1f5f9;
+        margin: 0;
+        padding: 0;
+      }
+      #root {
+        min-height: 100vh;
+      }
+    </style>
   </head>
   <body class="bg-[#090d16] text-slate-100 antialiased selection:bg-cyan-500 selection:text-black min-h-screen overflow-x-hidden">
     <div id="root"></div>

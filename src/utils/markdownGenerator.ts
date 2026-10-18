@@ -1,5 +1,5 @@
 import { ProfileConfig } from '../types';
-import { TECH_BADGES, getBadgeMarkdown } from '../data/techStackBadges';
+import { TECH_BADGES, getBadgeUrl } from '../data/techStackBadges';
 
 export function generateMarkdown(config: ProfileConfig): string {
   const lines: string[] = [];
@@ -17,17 +17,17 @@ export function generateMarkdown(config: ProfileConfig): string {
   const statusBadges: string[] = [];
   if (config.stats.showProfileViews) {
     statusBadges.push(
-      `![Profile Views](https://komarev.com/ghpvc/?username=${username}&label=PROFILE+VIEWS&style=${config.stats.viewsStyle}&color=${config.stats.viewsColor.replace('#', '')})`
+      `<img src="https://komarev.com/ghpvc/?username=${username}&label=PROFILE+VIEWS&style=${config.stats.viewsStyle}&color=${config.stats.viewsColor.replace('#', '')}" alt="Profile Views" />`
     );
   }
   if (config.availableForHire) {
     statusBadges.push(
-      `![Available for hire](https://img.shields.io/badge/Status-Available%20for%20Hire-22c55e?style=${config.badgeStyle}&logo=github)`
+      `<img src="https://img.shields.io/badge/Status-Available%20for%20Hire-22c55e?style=${config.badgeStyle}&logo=github" alt="Available for hire" />`
     );
   }
 
   if (statusBadges.length > 0) {
-    lines.push(`<p align="center">\n  ${statusBadges.join('  \n  ')}\n</p>\n`);
+    lines.push(`<p align="center">\n  ${statusBadges.join('\n  ')}\n</p>\n`);
   }
 
   // Animated Typing Header Banner
@@ -72,7 +72,7 @@ export function generateMarkdown(config: ProfileConfig): string {
     const badgeMarkdownItems = config.techBadges
       .map((id) => TECH_BADGES.find((b) => b.id === id))
       .filter((b): b is NonNullable<typeof b> => Boolean(b))
-      .map((b) => `  ${getBadgeMarkdown(b, config.badgeStyle)}`);
+      .map((b) => `  <img src="${getBadgeUrl(b, config.badgeStyle)}" alt="${b.name}" />`);
     lines.push(badgeMarkdownItems.join('\n'));
     lines.push(`</p>\n`);
   }

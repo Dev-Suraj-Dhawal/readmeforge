@@ -105,7 +105,7 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
               rehypePlugins={[rehypeRaw]}
               components={{
                 img: ({ node, ...props }) => (
-                  <img {...props} className="inline-block max-w-full my-1 rounded" alt={props.alt || ''} />
+                  <img {...props} className="inline-block max-w-full my-1 mr-1.5 rounded align-middle" alt={props.alt || ''} loading="lazy" decoding="async" />
                 ),
                 a: ({ node, ...props }) => (
                   <a {...props} className="text-[#58a6ff] hover:underline" target="_blank" rel="noreferrer" />

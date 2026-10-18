@@ -27,7 +27,8 @@ import {
   Eye, 
   PanelLeftClose, 
   PanelRightClose,
-  Zap
+  Zap,
+  Layers
 } from 'lucide-react';
 
 const STORAGE_KEY = 'readme_forge_config_v2';
@@ -48,6 +49,7 @@ export default function App() {
   const [editorSubTab, setEditorSubTab] = useState<'profile' | 'header' | 'badges' | 'stats' | 'bio' | 'socials' | 'projects'>('profile');
   const [activeTemplateId, setActiveTemplateId] = useState<string>(TEMPLATE_PRESETS[0].id);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [mobileView, setMobileView] = useState<'builder' | 'preview'>('builder');
 
   // Custom markdown buffer when in raw mode
   const [customMarkdownText, setCustomMarkdownText] = useState<string>('');
@@ -205,11 +207,39 @@ export default function App() {
               </div>
             </div>
 
+            {/* Mobile View Toggle (visible only on small/medium screens, hidden on desktop lg) */}
+            <div className="lg:hidden flex items-center p-1 mb-4 bg-slate-900/90 border border-slate-800 rounded-xl">
+              <button
+                onClick={() => setMobileView('builder')}
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition ${
+                  mobileView === 'builder'
+                    ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Visual Builder</span>
+              </button>
+              <button
+                onClick={() => setMobileView('preview')}
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition ${
+                  mobileView === 'preview'
+                    ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Live README Preview</span>
+              </button>
+            </div>
+
             {/* Split Screen Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
               
               {/* Left Column: Visual Builder Controls */}
-              <div className="lg:col-span-6 flex flex-col rounded-3xl border border-slate-800 bg-[#0d121f]/90 backdrop-blur-xl p-5 shadow-2xl">
+              <div className={`lg:col-span-6 flex flex-col rounded-3xl border border-slate-800 bg-[#0d121f]/90 backdrop-blur-xl p-4 sm:p-5 shadow-2xl ${
+                mobileView === 'builder' ? 'flex' : 'hidden lg:flex'
+              }`}>
                 
                 {/* Builder Sub-tabs Navigation */}
                 <div className="flex items-center gap-1 overflow-x-auto pb-3 mb-5 border-b border-slate-800 text-xs">
@@ -272,8 +302,10 @@ export default function App() {
               </div>
 
               {/* Right Column: Live README Preview Pane */}
-              <div className="lg:col-span-6 sticky top-20 self-start">
-                <div className="h-[750px]">
+              <div className={`lg:col-span-6 lg:sticky lg:top-20 self-start ${
+                mobileView === 'preview' ? 'block' : 'hidden lg:block'
+              }`}>
+                <div className="h-[600px] sm:h-[700px] lg:h-[750px]">
                   <ReadmePreview
                     markdown={generatedMarkdown}
                     username={config.githubUsername}

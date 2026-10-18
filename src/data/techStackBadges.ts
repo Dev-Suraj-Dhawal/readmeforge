@@ -16,6 +16,7 @@ export const TECH_BADGES: TechBadge[] = [
   { id: 'ruby', name: 'Ruby', category: 'languages', logo: 'ruby', logoColor: 'white', bgColor: 'CC342D' },
   { id: 'solidity', name: 'Solidity', category: 'languages', logo: 'solidity', logoColor: 'white', bgColor: '363636' },
   { id: 'lua', name: 'Lua', category: 'languages', logo: 'lua', logoColor: 'white', bgColor: '2C2D72' },
+  { id: 'webassembly', name: 'WebAssembly', category: 'languages', logo: 'webassembly', logoColor: 'white', bgColor: '654FF0' },
 
   // Frontend
   { id: 'react', name: 'React', category: 'frontend', logo: 'react', logoColor: '61DAFB', bgColor: '20232A' },
@@ -90,7 +91,8 @@ export const TECH_BADGES: TechBadge[] = [
   { id: 'postman', name: 'Postman', category: 'tools', logo: 'postman', logoColor: 'white', bgColor: 'FF6C37' },
   { id: 'jest', name: 'Jest', category: 'tools', logo: 'jest', logoColor: 'white', bgColor: 'C21325' },
   { id: 'pnpm', name: 'pnpm', category: 'tools', logo: 'pnpm', logoColor: 'white', bgColor: 'F69220' },
-  { id: 'neovim', name: 'Neovim', category: 'tools', logo: 'neovim', logoColor: 'white', bgColor: '57A143' }
+  { id: 'neovim', name: 'Neovim', category: 'tools', logo: 'neovim', logoColor: 'white', bgColor: '57A143' },
+  { id: 'stripe', name: 'Stripe', category: 'tools', logo: 'stripe', logoColor: 'white', bgColor: '008CDD' }
 ];
 
 export const BADGE_CATEGORIES = [
@@ -104,7 +106,15 @@ export const BADGE_CATEGORIES = [
   { id: 'tools', name: 'Tools & Workflow' },
 ] as const;
 
+export function getBadgeUrl(badge: TechBadge, style: string = 'for-the-badge'): string {
+  return `https://img.shields.io/badge/${encodeURIComponent(badge.name)}-${badge.bgColor}?style=${style}&logo=${badge.logo}&logoColor=${badge.logoColor}`;
+}
+
+export function getBadgeHtml(badge: TechBadge, style: string = 'for-the-badge'): string {
+  return `<img src="${getBadgeUrl(badge, style)}" alt="${badge.name}" />`;
+}
+
 export function getBadgeMarkdown(badge: TechBadge, style: string = 'for-the-badge'): string {
-  return `![${badge.name}](https://img.shields.io/badge/${encodeURIComponent(badge.name)}-${badge.bgColor}?style=${style}&logo=${badge.logo}&logoColor=${badge.logoColor})`;
+  return `<img src="${getBadgeUrl(badge, style)}" alt="${badge.name}" />`;
 }
 
