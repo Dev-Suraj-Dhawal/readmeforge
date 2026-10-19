@@ -2,6 +2,118 @@ import { TemplatePreset } from '../types';
 
 export const TEMPLATE_PRESETS: TemplatePreset[] = [
   {
+    id: 'cyber-hud-terminal',
+    title: 'Cyber HUD // Halftone Matrix Terminal',
+    subtitle: 'Phosphor green CRT enclosure, live dot-matrix portrait terminal, and CLI mission badges',
+    category: 'Cyberpunk',
+    badgeStyle: 'for-the-badge',
+    tags: ['Phosphor Green', 'HUD Card', 'Dot Matrix', 'CLI Console', 'Cyberpunk'],
+    previewGradient: 'from-emerald-950 via-slate-950 to-green-950 border-emerald-500/40',
+    config: {
+      githubUsername: 'Dev-Suraj-Dhawal',
+      displayName: 'Suraj Dhawal',
+      headline: 'Senior Full-Stack Architect | Security Specialist | Systems Builder',
+      avatarUrl: '/suraj-portrait.jpg',
+      showAvatarInReadme: true,
+      avatarShape: 'octagon',
+      avatarStyle: 'matrix-green',
+      avatarBorderColor: '#00FF66',
+      avatarBorderWidth: 3,
+      avatarZoom: 1.0,
+      avatarPanX: 0,
+      avatarPanY: 0,
+      avatarRawSource: '/suraj-portrait.jpg',
+      avatarWidth: 160,
+      location: 'Nepal // Remote',
+      company: 'Open Source Architect',
+      website: 'https://surajdhawal.com.np/',
+      pronouns: 'he/him',
+      availableForHire: true,
+      themeAesthetic: 'matrix',
+      titleStyle: 'cyber-badge',
+      bannerType: 'cyber-hud',
+      showAsciiHologram: true,
+      asciiDotColor: '#00FF66',
+      typingText: [
+        'Senior Full-Stack Architect & Systems Builder',
+        'High-Scale Distributed Systems & Cloud Security',
+        'Crafting crazy aesthetic developer tools ⚡',
+        'Open Source Contributor & Problem Solver'
+      ],
+      typingColor: '00FF66',
+      typingFont: 'Fira+Code',
+      workingOn: 'secure APIs, high-scale SaaS products, creative developer tooling',
+      learning: 'Distributed systems, WebAssembly runtimes, and eBPF instrumentation',
+      collaborateOn: 'High-impact open source tools, developer utilities, and modern SaaS',
+      askMeAbout: 'TypeScript, React, Node.js, System Architecture, UI/UX Craftsmanship',
+      reachMe: 'https://github.com/Dev-Suraj-Dhawal | blog: https://surajdhawal.com.np/',
+      funFact: 'I convert complex ideas into elegant, high-performance code.',
+      quote: 'Simplicity is prerequisite for reliability.',
+      quoteAuthor: 'Edsger W. Dijkstra',
+      techBadges: [
+        'typescript', 'javascript', 'react', 'nextjs', 'nodejs', 'python', 'rust',
+        'docker', 'postgresql', 'redis', 'tailwind', 'git', 'githubactions'
+      ],
+      badgeStyle: 'for-the-badge',
+      socials: [
+        { platform: 'GitHub', username: 'Dev-Suraj-Dhawal', url: 'https://github.com/Dev-Suraj-Dhawal', enabled: true },
+        { platform: 'LinkedIn', username: 'surajdhawal', url: 'https://linkedin.com/in/surajdhawal', enabled: true },
+        { platform: 'Website', username: 'surajdhawal.com.np', url: 'https://surajdhawal.com.np/', enabled: true },
+        { platform: 'Discord', username: 'suraj#0001', url: 'https://discord.com', enabled: true }
+      ],
+      stats: {
+        showStatsCard: true,
+        statsTheme: 'matrix',
+        showIcons: true,
+        showRank: true,
+        hideBorder: false,
+        showStreak: true,
+        streakTheme: 'matrix',
+        showTopLangs: true,
+        topLangsTheme: 'matrix',
+        topLangsLayout: 'compact',
+        showTrophies: true,
+        trophiesTheme: 'matrix',
+        showActivitySnake: true,
+        showProfileViews: true,
+        viewsColor: '00FF66',
+        viewsStyle: 'for-the-badge'
+      },
+      projects: [
+        {
+          id: 'p1',
+          title: '⚡ ReadmeForge Studio',
+          description: 'Next-Gen Aesthetic GitHub Profile README Architect with real-time GitHub simulation.',
+          tech: ['React', 'TypeScript', 'Tailwind', 'Vite'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/readmeforge',
+          liveUrl: 'https://readme-gray-gamma.vercel.app',
+          stars: 128
+        },
+        {
+          id: 'p2',
+          title: '🛠️ TerraForge Studio',
+          description: 'Modern infrastructure management and automated deployment platform.',
+          tech: ['TypeScript', 'Cloud', 'Automation'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/terraforge-studio',
+          stars: 94
+        },
+        {
+          id: 'p3',
+          title: '🧠 OpenReview AI',
+          description: 'Automated pull-request review and intelligent code feedback assistant.',
+          tech: ['Python', 'AI/ML', 'GitHub API'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/openreview-ai',
+          stars: 87
+        }
+      ],
+      support: [
+        { platform: 'buymeacoffee', username: 'surajdhawal', enabled: true },
+        { platform: 'github', username: 'Dev-Suraj-Dhawal', enabled: true }
+      ],
+      customMarkdown: ''
+    }
+  },
+  {
     id: 'cyberpunk-matrix',
     title: 'Cyberpunk // Matrix Architect',
     subtitle: 'High-contrast neon green & cyan glow with animated terminal typing and matrix snake',

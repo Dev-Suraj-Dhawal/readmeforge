@@ -73,7 +73,7 @@ export interface ProfileConfig {
   // Header & Aesthetics
   themeAesthetic: 'cyberpunk' | 'minimal' | 'lofi' | 'gamified' | 'matrix' | 'dracula';
   titleStyle?: 'cyber-badge' | 'gradient-glow' | 'terminal-code' | 'minimal-modern';
-  bannerType: 'typing' | 'wave' | 'retro' | 'custom' | 'minimal' | 'ascii-dots';
+  bannerType: 'typing' | 'wave' | 'retro' | 'custom' | 'minimal' | 'ascii-dots' | 'cyber-hud';
   customBannerUrl?: string;
   typingText: string[];
   typingColor: string;

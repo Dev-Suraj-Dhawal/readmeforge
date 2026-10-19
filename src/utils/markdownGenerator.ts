@@ -10,7 +10,62 @@ export function generateMarkdown(config: ProfileConfig): string {
   const headline = config.headline;
   const titleTheme = config.titleStyle || 'cyber-badge';
 
-  if (titleTheme === 'terminal-code') {
+  if (config.bannerType === 'cyber-hud') {
+    // 5-6 top Tech Badges as phosphor CLI capsules
+    const techPills = (config.techBadges && config.techBadges.length > 0
+      ? config.techBadges.slice(0, 6).map((id) => {
+          const badge = TECH_BADGES.find((b) => b.id === id);
+          const label = badge ? badge.name : id;
+          return `<code><b>[ ${label} ]</b></code>`;
+        })
+      : ['<code><b>[ Java 21 ]</b></code>', '<code><b>[ Spring Boot ]</b></code>', '<code><b>[ TypeScript ]</b></code>', '<code><b>[ Docker ]</b></code>', '<code><b>[ AWS ]</b></code>']
+    ).join(' ');
+
+    const mission = config.workingOn || 'secure APIs, SaaS products, creative developer tooling';
+    const avatarSrc = config.avatarUrl && config.avatarUrl.startsWith('/')
+      ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
+      : config.avatarUrl || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/suraj-portrait.jpg';
+
+    lines.push(
+`<div align="center">
+  <table align="center" width="100%" style="background-color: #04080e; border: 2px solid #00FF66; border-radius: 20px; box-shadow: 0 0 25px rgba(0, 255, 102, 0.25); max-width: 840px;">
+    <tr>
+      <td width="60%" style="padding: 24px; vertical-align: top; text-align: left; border: none;">
+        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 11px; color: #00FF66; font-weight: bold; letter-spacing: 1.5px;">
+          ■■■ SYSTEM INTERFACE // ACTIVE
+        </p>
+        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 13px; color: #00FF66; font-weight: bold;">
+          &gt; HELLO, WORLD
+        </p>
+        <h1 style="margin: 0 0 8px 0; font-family: monospace; font-size: 26px; color: #00FF66; font-weight: 900; letter-spacing: 1px; border: none;">
+          ${name.toUpperCase()}_
+        </h1>
+        <p style="margin: 0 0 14px 0; font-family: monospace; font-size: 12px; color: #a3e635; font-weight: 600;">
+          ${headline}
+        </p>
+        <p style="margin: 0 0 14px 0;">
+          ${techPills}
+        </p>
+        <p style="margin: 0; font-family: monospace; font-size: 11px; color: #00FF66; opacity: 0.85;">
+          | mission -&gt; <b>${mission}</b>
+        </p>
+      </td>
+      <td width="40%" align="center" style="padding: 24px; vertical-align: middle; border: none;">
+        <div style="border: 1px solid #00FF66; border-radius: 14px; padding: 12px; background: #020508; box-shadow: 0 0 15px rgba(0,255,102,0.15); max-width: 220px;">
+          <p style="text-align: right; margin: 0 0 6px 0; font-family: monospace; font-size: 9px; color: #00FF66; font-weight: bold;">
+            COMPLETE
+          </p>
+          <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="220" alt="${name} ASCII Portrait" style="border-radius: 12px; border: 2px solid #00FF66; object-fit: cover;" />
+          <p style="text-align: left; margin: 8px 0 0 0; font-family: monospace; font-size: 9px; color: #00FF66; opacity: 0.8;">
+            &gt; portrait.svg loaded // terminal profile
+          </p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>\n`
+    );
+  } else if (titleTheme === 'terminal-code') {
     lines.push(
       `<div align="center">\n  <p align="center">\n    <code><b>$ whoami &gt;</b> ${name}</code><br/>\n    <code><b>$ echo $MISSION &gt;</b> ${headline || 'Building Scalable Software'}</code>\n  </p>\n</div>\n`
     );
@@ -29,8 +84,8 @@ export function generateMarkdown(config: ProfileConfig): string {
     );
   }
 
-  // Profile Picture in README (if enabled)
-  if (config.showAvatarInReadme && config.avatarUrl) {
+  // Profile Picture in README (if enabled and not cyber-hud)
+  if (config.bannerType !== 'cyber-hud' && config.showAvatarInReadme && config.avatarUrl) {
     const shapeStyle =
       config.avatarShape === 'circle'
         ? 'border-radius: 50%;'

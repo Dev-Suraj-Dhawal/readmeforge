@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ProfileConfig } from '../../types';
-import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon, Scan } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon, Scan, Terminal } from 'lucide-react';
 import { AsciiDotMatrix } from '../AsciiDotMatrix';
+import { CyberHudTerminal } from '../CyberHudTerminal';
 
 interface HeaderBannerEditorProps {
   config: ProfileConfig;
@@ -12,6 +13,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
   const [newLineText, setNewLineText] = useState('');
 
   const bannerTypes = [
+    { id: 'cyber-hud', label: '⚡ Cyber HUD Terminal Card', desc: 'Phosphor green CRT enclosure with dot-matrix portrait terminal and CLI badges' },
     { id: 'ascii-dots', label: 'Holographic ASCII Dots', desc: 'Matrix green dot matrix portrait animation' },
     { id: 'typing', label: 'Animated Typing SVG', desc: 'Sleek typewriter animation of multiple roles/lines' },
     { id: 'wave', label: 'Dynamic Wave Banner', desc: 'Flowing animated gradient wave with your name' },
@@ -106,6 +108,28 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
         </div>
       )}
 
+      {/* Cyber HUD Terminal Preview */}
+      {config.bannerType === 'cyber-hud' && (
+        <div className="space-y-4 p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/40">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-2">
+              <Terminal className="w-3.5 h-3.5" />
+              <span>Cyber HUD Terminal Layout Preview</span>
+            </span>
+            <span className="text-[11px] font-mono text-emerald-400">CRT Active</span>
+          </div>
+
+          <CyberHudTerminal
+            config={config}
+            dotColor={`#${config.typingColor.replace('#', '') || '00FF66'}`}
+          />
+
+          <p className="text-[11px] text-slate-400">
+            Retro-futuristic green CRT monitor enclosure with live dot-matrix portrait terminal, prompt headers, and CLI tech badges.
+          </p>
+        </div>
+      )}
+
       {/* Holographic ASCII Dot Matrix Preview */}
       {config.bannerType === 'ascii-dots' && (
         <div className="space-y-4 p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/30">
@@ -130,7 +154,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
       )}
 
       {/* Animated Typing SVG Options */}
-      {(config.bannerType === 'typing' || config.bannerType === 'ascii-dots') && (
+      {(config.bannerType === 'typing' || config.bannerType === 'ascii-dots' || config.bannerType === 'cyber-hud') && (
         <div className="space-y-4 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
           <div className="flex items-center justify-between">
             <label className="text-xs font-semibold text-slate-200 flex items-center gap-2">
