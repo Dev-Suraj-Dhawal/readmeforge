@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <nav className="flex items-center p-0.5 sm:p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium max-w-full overflow-x-auto">
           <button
             onClick={() => setActiveTab('editor')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'editor'
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('templates')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'templates'
                 ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-md shadow-purple-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('simulator')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'simulator'
                 ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -123,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('raw')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg transition-all shrink-0 ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'raw'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20 font-semibold'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -140,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenGuide}
             title="How to add to GitHub"
-            className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 transition"
+            className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
           >
             <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
             <span className="hidden md:inline">Setup Guide</span>
@@ -150,7 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onReset}
             title="Reset to defaults"
-            className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition"
+            className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 cursor-pointer transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -159,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onDownloadMarkdown}
             title="Download README.md"
-            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-200 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 bg-slate-800/80 hover:bg-slate-700/80 transition"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-200 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 bg-slate-800/80 hover:bg-slate-700/80 cursor-pointer transition"
           >
             <Download className="w-3.5 h-3.5 text-slate-300" />
             <span>Export .md</span>
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Instant Copy Markdown Button */}
           <button
             onClick={handleCopy}
-            className={`flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-lg transition-all shadow-md ${
+            className={`flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-lg transition-all shadow-md cursor-pointer ${
               copied
                 ? 'bg-emerald-500 text-slate-950 shadow-emerald-500/30'
                 : 'bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 hover:brightness-110 shadow-cyan-500/25'

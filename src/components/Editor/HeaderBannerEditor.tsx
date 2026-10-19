@@ -76,7 +76,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
             <button
               key={type.id}
               onClick={() => onChange({ bannerType: type.id })}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                 config.bannerType === type.id
                   ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 shadow-md shadow-cyan-500/10'
                   : 'border-slate-800 bg-slate-950/50 text-slate-400 hover:border-slate-700 hover:text-slate-300'
@@ -153,7 +153,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
                 />
                 <button
                   onClick={() => handleRemoveLine(idx)}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 cursor-pointer transition"
                   title="Remove line"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -174,7 +174,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
             />
             <button
               onClick={handleAddLine}
-              className="px-3 py-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded-lg text-xs font-semibold hover:bg-cyan-500/30 transition flex items-center gap-1"
+              className="px-3 py-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded-lg text-xs font-semibold hover:bg-cyan-500/30 cursor-pointer transition flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add</span>
@@ -223,7 +223,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
                       key={c.hex}
                       onClick={() => onChange({ typingColor: c.hex })}
                       title={c.label}
-                      className="w-4 h-4 rounded-full border border-white/20 hover:scale-110 transition"
+                      className="w-4 h-4 rounded-full border border-white/20 hover:scale-110 cursor-pointer transition"
                       style={{ backgroundColor: `#${c.hex}` }}
                     />
                   ))}

@@ -266,11 +266,12 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
               {/* Rendered README Markdown Content */}
               <div className="p-6 sm:p-8 overflow-x-auto markdown-body">
                 <ReactMarkdown
+                  urlTransform={(url) => url}
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw]}
                   components={{
                     img: ({ node, ...props }) => {
-                      const src = props.src || '';
+                      let src = props.src || '';
                       if (src.includes('ascii-portrait.png')) {
                         return (
                           <div className="my-4 flex justify-center w-full">
@@ -278,17 +279,28 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
                           </div>
                         );
                       }
+
+                      const isAvatar =
+                        Boolean(props.alt && (props.alt.toLowerCase().includes('suraj') || props.alt.toLowerCase().includes('avatar'))) ||
+                        src.includes('portrait') ||
+                        Boolean(config.avatarUrl && src === config.avatarUrl);
+
+                      if (isAvatar && (!src || src.includes('readmeforge/main/public'))) {
+                        src = config.avatarUrl || '/suraj-portrait.jpg';
+                      }
+
                       return (
                         <img
                           {...props}
+                          src={src}
                           style={props.style}
                           className="inline-block max-w-full my-1 mr-1.5 align-middle"
                           alt={props.alt || ''}
                           loading="lazy"
                           decoding="async"
                           onError={(e) => {
-                            if (props.src && (props.src.includes('avatar') || props.src.includes('portrait'))) {
-                              e.currentTarget.src = '/suraj-portrait.jpg';
+                            if (isAvatar) {
+                              e.currentTarget.src = config.avatarUrl || '/suraj-portrait.jpg';
                             }
                           }}
                         />

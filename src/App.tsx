@@ -155,7 +155,7 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('editor')}
-                className="text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+                className="text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer transition"
               >
                 Back to Builder
               </button>
@@ -200,7 +200,7 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('templates')}
-                  className="text-xs text-purple-300 hover:text-purple-200 bg-purple-950/50 hover:bg-purple-900/50 border border-purple-800/50 px-3 py-1.5 rounded-lg transition"
+                  className="text-xs text-purple-300 hover:text-purple-200 bg-purple-950/50 hover:bg-purple-900/50 border border-purple-800/50 px-3 py-1.5 rounded-lg cursor-pointer transition"
                 >
                   ⚡ Browse Templates
                 </button>
@@ -211,7 +211,7 @@ export default function App() {
             <div className="lg:hidden flex items-center p-1 mb-4 bg-slate-900/90 border border-slate-800 rounded-xl">
               <button
                 onClick={() => setMobileView('builder')}
-                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition ${
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 cursor-pointer transition ${
                   mobileView === 'builder'
                     ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                     : 'text-slate-400 hover:text-white'
@@ -222,7 +222,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => setMobileView('preview')}
-                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition ${
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 cursor-pointer transition ${
                   mobileView === 'preview'
                     ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                     : 'text-slate-400 hover:text-white'
@@ -250,7 +250,7 @@ export default function App() {
                       <button
                         key={tab.id}
                         onClick={() => setEditorSubTab(tab.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl whitespace-nowrap transition-all ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl whitespace-nowrap cursor-pointer transition-all ${
                           isActive
                             ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold shadow-sm'
                             : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent'

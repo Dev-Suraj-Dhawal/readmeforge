@@ -21,7 +21,11 @@ export function loadImage(source: File | string): Promise<HTMLImageElement> {
       objectUrl = URL.createObjectURL(source);
       img.src = objectUrl;
     } else {
-      if (!source.startsWith('data:') && !source.startsWith('blob:')) {
+      const isRemote =
+        (source.startsWith('http://') || source.startsWith('https://')) &&
+        typeof window !== 'undefined' &&
+        !source.startsWith(window.location.origin);
+      if (isRemote) {
         img.crossOrigin = 'anonymous';
       }
       img.src = source;
@@ -32,10 +36,17 @@ export function loadImage(source: File | string): Promise<HTMLImageElement> {
       resolve(img);
     };
 
-    img.onerror = (err) => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      // Fallback: If external image fails due to CORS, try loading directly
-      reject(err);
+    img.onerror = () => {
+      if (img.crossOrigin && typeof source === 'string') {
+        // Retry cleanly without crossOrigin
+        const fallbackImg = new Image();
+        fallbackImg.onload = () => resolve(fallbackImg);
+        fallbackImg.onerror = (err) => reject(err);
+        fallbackImg.src = source;
+      } else {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        reject(new Error('Failed to load image'));
+      }
     };
   });
 }

@@ -5,8 +5,8 @@ export function generateMarkdown(config: ProfileConfig): string {
   const lines: string[] = [];
   const username = config.githubUsername.trim() || 'your-username';
 
-  // Header Title
-  lines.push(`<h1 align="center">Hi 👋, I'm ${config.displayName || username}</h1>`);
+  // Header Title with Animated Wave
+  lines.push(`<h1 align="center">\n  <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="30px" height="30px" alt="wave" /> Hi, I'm ${config.displayName || username}\n</h1>`);
 
   // Subtitle / Headline
   if (config.headline) {
@@ -19,9 +19,11 @@ export function generateMarkdown(config: ProfileConfig): string {
       config.avatarShape === 'circle'
         ? 'border-radius: 50%;'
         : config.avatarShape === 'squircle'
-        ? 'border-radius: 24%;'
+        ? 'border-radius: 26%;'
         : config.avatarShape === 'square'
-        ? 'border-radius: 12px;'
+        ? 'border-radius: 14px;'
+        : config.avatarShape === 'hexagon'
+        ? 'clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);'
         : '';
     const width = config.avatarWidth || 160;
     const avatarSrc = config.avatarUrl.startsWith('/')
@@ -31,8 +33,9 @@ export function generateMarkdown(config: ProfileConfig): string {
     const borderColor = config.avatarBorderColor || '#00FF66';
     const borderWidth = typeof config.avatarBorderWidth === 'number' ? config.avatarBorderWidth : 3;
     const borderStyle = borderWidth > 0 ? `border: ${borderWidth}px solid ${borderColor};` : '';
+    const glowStyle = borderWidth > 0 ? `box-shadow: 0 0 25px ${borderColor}66;` : '';
 
-    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} object-fit: cover;" />\n</p>\n`);
+    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} ${glowStyle} object-fit: cover;" />\n</p>\n`);
   }
 
   // Profile Views Badge & Status

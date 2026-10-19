@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { ProfileConfig } from '../../types';
 import { optimizeAvatarImage } from '../../utils/imageOptimizer';
 import { 
@@ -14,14 +14,9 @@ import {
   Sliders,
   Check,
   RefreshCw,
-  ZoomIn,
-  Move,
   Palette,
   Shield,
-  Download,
-  Flame,
-  Terminal,
-  SunMedium
+  Download
 } from 'lucide-react';
 
 interface ProfileEditorProps {
@@ -99,7 +94,6 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
       onChange(updates);
     } catch (err) {
       console.warn('Image optimization fallback:', err);
-      // Fallback: If external source has CORS restrictions for Canvas, still set direct URL
       if (typeof source === 'string') {
         onChange({
           avatarUrl: source,
@@ -134,14 +128,16 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
       return;
     }
 
-    // Convert file to temporary object URL or data URL for caching
     const reader = new FileReader();
     reader.onload = (e) => {
       const resultStr = e.target?.result as string;
       if (resultStr) {
-        triggerImageOptimization(file, {}).then(() => {
-          onChange({ avatarRawSource: resultStr });
+        onChange({
+          avatarRawSource: resultStr,
+          avatarUrl: resultStr,
+          showAvatarInReadme: true
         });
+        triggerImageOptimization(file, {});
       }
     };
     reader.readAsDataURL(file);
@@ -169,37 +165,62 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
   };
 
   const handleUseGithubAvatar = () => {
-    const username = config.githubUsername || 'Dev-Suraj-Dhawal';
     const ghUrl = `https://avatars.githubusercontent.com/u/195623319?v=4`;
-    triggerImageOptimization(ghUrl, {});
+    onChange({
+      avatarUrl: ghUrl,
+      avatarRawSource: ghUrl,
+      showAvatarInReadme: true
+    });
   };
 
   const handleUseSurajPortrait = () => {
-    triggerImageOptimization('/suraj-portrait.jpg', {});
+    onChange({
+      avatarUrl: '/suraj-portrait.jpg',
+      avatarRawSource: '/suraj-portrait.jpg',
+      showAvatarInReadme: true
+    });
   };
 
   const handleShapeChange = (shape: ProfileConfig['avatarShape']) => {
-    triggerImageOptimization(rawSource, { shape });
+    onChange({ avatarShape: shape });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { shape });
+    }
   };
 
   const handleStyleChange = (style: ProfileConfig['avatarStyle']) => {
-    triggerImageOptimization(rawSource, { style });
+    onChange({ avatarStyle: style });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { style });
+    }
   };
 
   const handleColorChange = (borderColor: string) => {
-    triggerImageOptimization(rawSource, { borderColor });
+    onChange({ avatarBorderColor: borderColor });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { borderColor });
+    }
   };
 
   const handleBorderWidthChange = (borderWidth: number) => {
-    triggerImageOptimization(rawSource, { borderWidth });
+    onChange({ avatarBorderWidth: borderWidth });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { borderWidth });
+    }
   };
 
   const handleZoomChange = (zoom: number) => {
-    triggerImageOptimization(rawSource, { zoom });
+    onChange({ avatarZoom: zoom });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { zoom });
+    }
   };
 
   const handlePanChange = (panX: number, panY: number) => {
-    triggerImageOptimization(rawSource, { panX, panY });
+    onChange({ avatarPanX: panX, avatarPanY: panY });
+    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
+      triggerImageOptimization(rawSource, { panX, panY });
+    }
   };
 
   const handleDownloadOptimizedImage = () => {
@@ -212,6 +233,22 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
     document.body.removeChild(a);
   };
 
+  // Preview styling calculations
+  const previewShapeClass =
+    currentShape === 'circle'
+      ? 'rounded-full'
+      : currentShape === 'squircle'
+      ? 'rounded-3xl'
+      : currentShape === 'square'
+      ? 'rounded-xl'
+      : currentShape === 'diamond'
+      ? 'rotate-45 scale-90 rounded-lg'
+      : 'rounded-none';
+
+  const previewHexagonClip = currentShape === 'hexagon'
+    ? { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }
+    : {};
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div>
@@ -220,7 +257,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
           <span>Profile Identity & Avatar Studio</span>
         </h3>
         <p className="text-xs text-slate-400 mt-1">
-          Upload any photo or paste an image URL. Real-time client optimization formats your avatar with custom shapes, HD clarity filters, and responsive README integration.
+          Upload any photo or paste an image URL. Instant client-side optimization formats your avatar with custom shapes, HD clarity filters, glowing rings, and responsive README integration.
         </p>
       </div>
 
@@ -242,16 +279,18 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
 
           <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
             <button
+              type="button"
               onClick={() => setUploadMode('upload')}
-              className={`px-2.5 py-1 rounded-md font-medium transition ${
+              className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition ${
                 uploadMode === 'upload' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
               Upload Local
             </button>
             <button
+              type="button"
               onClick={() => setUploadMode('link')}
-              className={`px-2.5 py-1 rounded-md font-medium transition ${
+              className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition ${
                 uploadMode === 'link' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -262,14 +301,23 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
 
         {/* Studio Workspace: Visual Preview + Controls */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-          {/* Active Image View with Live Canvas Shape */}
+          {/* Active Image View with Live Styled Border & Glow */}
           <div className="flex flex-col items-center gap-2 shrink-0">
-            <div className="relative group">
-              <div className="w-32 h-32 rounded-2xl p-1 bg-slate-900/80 border border-slate-800 flex items-center justify-center shadow-lg relative overflow-hidden">
+            <div className="relative group p-1">
+              <div 
+                className={`w-32 h-32 overflow-hidden bg-slate-950 flex items-center justify-center transition-all duration-200 ${previewShapeClass}`}
+                style={{
+                  border: currentBorderWidth > 0 ? `${currentBorderWidth}px solid ${currentBorderColor}` : 'none',
+                  boxShadow: currentBorderWidth > 0 ? `0 0 25px ${currentBorderColor}55` : 'none',
+                  ...previewHexagonClip
+                }}
+              >
                 <img
                   src={config.avatarUrl || '/suraj-portrait.jpg'}
                   alt={config.displayName || 'Profile Avatar'}
-                  className="w-full h-full object-contain transition-transform duration-200"
+                  className={`w-full h-full object-cover transition-transform duration-200 ${
+                    currentShape === 'diamond' ? '-rotate-45 scale-125' : ''
+                  }`}
                   onError={(e) => {
                     e.currentTarget.src = '/suraj-portrait.jpg';
                   }}
@@ -292,12 +340,12 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 pt-1">
               <button
                 type="button"
                 onClick={handleDownloadOptimizedImage}
-                title="Download this optimized transparent avatar PNG"
-                className="text-[10px] text-slate-400 hover:text-cyan-300 flex items-center gap-1 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 hover:border-slate-700 transition"
+                title="Download this styled avatar PNG"
+                className="text-[10px] text-slate-400 hover:text-cyan-300 flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer transition"
               >
                 <Download className="w-3 h-3" />
                 <span>Save PNG</span>
@@ -322,7 +370,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                 <Upload className="w-5 h-5 text-cyan-400" />
                 <span className="text-xs font-semibold text-white">Click or Drag & Drop photo here</span>
                 <span className="text-[11px] text-slate-500">
-                  Instant client-side optimization • JPG, PNG, WebP
+                  Instant client-side optimization • JPG, PNG, WebP up to 15MB
                 </span>
                 <input
                   ref={fileInputRef}
@@ -345,6 +393,11 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                     onChange={(e) => {
                       const url = e.target.value.trim();
                       if (url) {
+                        onChange({
+                          avatarUrl: url,
+                          avatarRawSource: url,
+                          showAvatarInReadme: true
+                        });
                         triggerImageOptimization(url, {});
                       }
                     }}
@@ -361,14 +414,14 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
               <button
                 type="button"
                 onClick={handleUseSurajPortrait}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 transition"
+                className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 cursor-pointer transition"
               >
                 Suraj's Real Photo
               </button>
               <button
                 type="button"
                 onClick={handleUseGithubAvatar}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition"
+                className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white cursor-pointer transition"
               >
                 Fetch GitHub Avatar
               </button>
@@ -398,7 +451,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                 key={s.id}
                 type="button"
                 onClick={() => handleShapeChange(s.id as any)}
-                className={`py-2 px-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition ${
+                className={`py-2 px-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer transition ${
                   currentShape === s.id
                     ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm font-semibold'
                     : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-800'
@@ -433,7 +486,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                 key={f.id}
                 type="button"
                 onClick={() => handleStyleChange(f.id as any)}
-                className={`p-2 rounded-xl text-left transition flex flex-col justify-between ${
+                className={`p-2 rounded-xl text-left transition flex flex-col justify-between cursor-pointer ${
                   currentStyle === f.id
                     ? 'bg-purple-950/40 text-purple-200 border border-purple-500/50 shadow-sm'
                     : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-800'
@@ -460,10 +513,10 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                   key={w}
                   type="button"
                   onClick={() => handleBorderWidthChange(w)}
-                  className={`px-1.5 py-0.5 rounded text-[10px] transition ${
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium cursor-pointer transition ${
                     currentBorderWidth === w
-                      ? 'bg-cyan-500 text-slate-950 font-bold'
-                      : 'bg-slate-900 text-slate-400 hover:text-white'
+                      ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
+                      : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                   }`}
                 >
                   {w === 0 ? 'None' : `${w}px`}
@@ -487,22 +540,25 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                 type="button"
                 onClick={() => handleColorChange(c.color)}
                 style={{ backgroundColor: c.color }}
-                className={`w-7 h-7 rounded-lg transition-transform ${
+                className={`w-7 h-7 rounded-lg cursor-pointer transition-transform ${
                   currentBorderColor.toLowerCase() === c.color.toLowerCase()
-                    ? 'ring-2 ring-white scale-110 shadow-md'
-                    : 'opacity-70 hover:opacity-100 hover:scale-105'
+                    ? 'ring-2 ring-white scale-110 shadow-lg'
+                    : 'opacity-75 hover:opacity-100 hover:scale-105'
                 }`}
                 title={c.name}
               />
             ))}
 
-            <input
-              type="color"
-              value={currentBorderColor}
-              onChange={(e) => handleColorChange(e.target.value)}
-              className="w-7 h-7 rounded-lg bg-transparent cursor-pointer border border-slate-700"
-              title="Custom Color"
-            />
+            <label className="relative cursor-pointer flex items-center gap-1 text-[11px] text-slate-400 bg-slate-900 px-2 py-1 rounded-lg border border-slate-800 hover:border-slate-700">
+              <input
+                type="color"
+                value={currentBorderColor}
+                onChange={(e) => handleColorChange(e.target.value)}
+                className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0"
+                title="Custom Color"
+              />
+              <span className="font-mono text-[10px]">{currentBorderColor.toUpperCase()}</span>
+            </label>
           </div>
         </div>
 
@@ -511,10 +567,10 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
           <button
             type="button"
             onClick={() => setShowAdvancedTuning(!showAdvancedTuning)}
-            className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 font-medium transition"
+            className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 font-medium cursor-pointer transition"
           >
             <Sliders className="w-3.5 h-3.5" />
-            <span>{showAdvancedTuning ? 'Hide Face Framing Controls' : 'Adjust Framing, Zoom & Face Position'}</span>
+            <span>{showAdvancedTuning ? 'Hide Framing & Position Controls' : 'Adjust Framing, Zoom & Face Position'}</span>
           </button>
 
           {showAdvancedTuning && (
@@ -525,7 +581,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                   <button
                     type="button"
                     onClick={() => handleZoomChange(1.0)}
-                    className="text-[10px] text-cyan-400 hover:underline"
+                    className="text-[10px] text-cyan-400 hover:underline cursor-pointer"
                   >
                     Reset
                   </button>
@@ -547,7 +603,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                   <button
                     type="button"
                     onClick={() => handlePanChange(0, currentPanY)}
-                    className="text-[10px] text-cyan-400 hover:underline"
+                    className="text-[10px] text-cyan-400 hover:underline cursor-pointer"
                   >
                     Center
                   </button>
@@ -569,7 +625,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                   <button
                     type="button"
                     onClick={() => handlePanChange(currentPanX, 0)}
-                    className="text-[10px] text-cyan-400 hover:underline"
+                    className="text-[10px] text-cyan-400 hover:underline cursor-pointer"
                   >
                     Center
                   </button>
@@ -612,7 +668,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                     key={sz}
                     type="button"
                     onClick={() => onChange({ avatarWidth: sz })}
-                    className={`px-2.5 py-1 text-[11px] rounded-lg transition ${
+                    className={`px-2.5 py-1 text-[11px] rounded-lg cursor-pointer transition ${
                       (config.avatarWidth || 160) === sz
                         ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold'
                         : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
