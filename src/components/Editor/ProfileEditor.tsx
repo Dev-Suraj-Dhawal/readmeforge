@@ -117,17 +117,27 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
   ]);
 
   // Handle local file upload
-  const handleFileUpload = async (file: File) => {
+  // Handle local file upload with instant 0ms ObjectURL
+  const handleFileUpload = (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file (JPG, PNG, WebP, GIF)');
       return;
     }
 
-    if (file.size > 15 * 1024 * 1024) {
-      alert('File is too large (max 15MB).');
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File is too large (max 20MB).');
       return;
     }
 
+    // 1. Instantaneous 0ms memory URL for immediate rendering
+    const objectUrl = URL.createObjectURL(file);
+    onChange({
+      avatarRawSource: objectUrl,
+      avatarUrl: objectUrl,
+      showAvatarInReadme: true
+    });
+
+    // 2. Background non-blocking persistence into DataURL
     const reader = new FileReader();
     reader.onload = (e) => {
       const resultStr = e.target?.result as string;
@@ -232,14 +242,17 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
   };
 
   // Instant CSS mapping functions for 0ms sub-millisecond responsiveness
-  const getShapeStyle = (shape: string) => {
+  const getShapeStyle = (shape: string): React.CSSProperties => {
     switch (shape) {
       case 'circle': return { borderRadius: '50%' };
       case 'squircle': return { borderRadius: '26%' };
-      case 'square': return { borderRadius: '14px' };
-      case 'diamond': return { clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' };
+      case 'shield': return { clipPath: 'polygon(50% 0%, 100% 15%, 100% 68%, 50% 100%, 0% 68%, 0% 15%)' };
+      case 'octagon': return { clipPath: 'polygon(28% 0%, 72% 0%, 100% 28%, 100% 72%, 72% 100%, 28% 100%, 0% 72%, 0% 28%)' };
       case 'hexagon': return { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
-      default: return { borderRadius: '50%' };
+      case 'diamond': return { clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' };
+      case 'cut-corner': return { clipPath: 'polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%)' };
+      case 'leaf': return { borderRadius: '4px 50% 50% 50%' };
+      case 'square': default: return { borderRadius: '16px' };
     }
   };
 
@@ -253,40 +266,153 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
     }
   };
 
+  const SHAPES_LIST: Array<{
+    id: ProfileConfig['avatarShape'];
+    label: string;
+    sublabel: string;
+    badge: string;
+    renderSvg: (active: boolean) => React.ReactNode;
+  }> = [
+    {
+      id: 'circle',
+      label: 'Neo-Circle',
+      sublabel: 'Classic',
+      badge: 'Popular',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      )
+    },
+    {
+      id: 'squircle',
+      label: 'Squircle',
+      sublabel: 'Curved',
+      badge: 'Apple',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <rect x="3" y="3" width="18" height="18" rx="6" />
+        </svg>
+      )
+    },
+    {
+      id: 'shield',
+      label: 'Cyber Shield',
+      sublabel: 'Hero Crest',
+      badge: 'Top Pick',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <path d="M12 2 L21 5 L21 14 C21 18.5 16 22 12 23 C8 22 3 18.5 3 14 L3 5 Z" />
+        </svg>
+      )
+    },
+    {
+      id: 'octagon',
+      label: 'Cyber Octagon',
+      sublabel: 'Chamfered',
+      badge: 'Sci-Fi',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <polygon points="7,2 17,2 22,7 22,17 17,22 7,22 2,17 2,7" />
+        </svg>
+      )
+    },
+    {
+      id: 'hexagon',
+      label: 'Tech Hex',
+      sublabel: 'Matrix',
+      badge: 'Futuristic',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <polygon points="12,2 21,7 21,17 12,22 3,17 3,7" />
+        </svg>
+      )
+    },
+    {
+      id: 'diamond',
+      label: 'Radiant Diamond',
+      sublabel: '45° Tilt',
+      badge: 'Vibrant',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <polygon points="12,2 22,12 12,22 2,12" />
+        </svg>
+      )
+    },
+    {
+      id: 'cut-corner',
+      label: 'Chamfer Cut',
+      sublabel: 'Asymmetric',
+      badge: 'Stealth',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <polygon points="6,2 22,2 22,18 18,22 2,22 2,6" />
+        </svg>
+      )
+    },
+    {
+      id: 'leaf',
+      label: 'Organic Leaf',
+      sublabel: 'Modern Drop',
+      badge: 'Aesthetic',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <path d="M4 4 C16 4 21 9 21 16 C21 21 16 21 9 21 C4 21 4 16 4 4 Z" />
+        </svg>
+      )
+    },
+    {
+      id: 'square',
+      label: 'Soft Square',
+      sublabel: 'Refined',
+      badge: 'Minimal',
+      renderSvg: (active) => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth={active ? 2.5 : 2}>
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+        </svg>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-6 animate-fadeIn">
-      <div>
-        <h3 className="text-base font-bold text-white flex items-center gap-2">
-          <User className="w-4 h-4 text-cyan-400" />
-          <span>Profile Identity & Avatar Studio</span>
-        </h3>
-        <p className="text-xs text-slate-400 mt-1">
-          Upload any photo or paste an image URL. Instant client-side optimization formats your avatar with custom shapes, HD clarity filters, glowing rings, and responsive README integration.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <User className="w-4 h-4 text-cyan-400" />
+            <span>Profile Identity & Avatar Studio</span>
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
+            Sub-millisecond instant preview • 9 modern geometric shapes • HD clarity filters • GPU accelerated responsive styling.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-mono">
+          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            0ms Instant Sync
+          </span>
+          <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+            GPU Active
+          </span>
+        </div>
       </div>
 
       {/* Modern Avatar Studio Card */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#090e17] border border-slate-800 shadow-xl space-y-5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#0c1424] via-[#090e17] to-[#070b12] border border-cyan-950/80 shadow-2xl space-y-6">
         
         {/* Header Toggle (Upload vs URL) */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
           <span className="text-xs font-semibold text-white flex items-center gap-2">
             <Camera className="w-4 h-4 text-cyan-400" />
-            <span>Profile Photo & Shape Studio</span>
-            {isProcessing && (
-              <span className="flex items-center gap-1 text-[11px] text-cyan-400 font-mono animate-pulse">
-                <RefreshCw className="w-3 h-3 animate-spin" />
-                Optimizing...
-              </span>
-            )}
+            <span>Active Silhouette: <span className="text-cyan-400 capitalize font-mono">{currentShape}</span></span>
           </span>
 
           <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
             <button
               type="button"
               onClick={() => setUploadMode('upload')}
-              className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition ${
-                uploadMode === 'upload' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-md font-medium cursor-pointer transition ${
+                uploadMode === 'upload' ? 'bg-cyan-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'
               }`}
             >
               Upload Local
@@ -294,32 +420,48 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
             <button
               type="button"
               onClick={() => setUploadMode('link')}
-              className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition ${
-                uploadMode === 'link' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-md font-medium cursor-pointer transition ${
+                uploadMode === 'link' ? 'bg-cyan-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'
               }`}
             >
-              Image Link
+              Direct Link
             </button>
           </div>
         </div>
 
-        {/* Studio Workspace: Visual Preview + Controls */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-          {/* Active Image View with Live Styled Border & Glow */}
-          <div className="flex flex-col items-center gap-2 shrink-0">
-            <div className="relative group p-1">
+        {/* Studio Workspace: Visual Preview Stage + Controls */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          
+          {/* Holographic Showcase Pedestal (Left / Center) */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center p-5 rounded-2xl bg-slate-950/70 border border-slate-800/80 relative overflow-hidden group">
+            {/* Ambient Dynamic Background Glow */}
+            <div 
+              className="absolute inset-0 opacity-25 blur-2xl pointer-events-none transition-colors duration-300"
+              style={{ backgroundColor: currentBorderColor }}
+            />
+
+            {/* Corner Tech Reticles */}
+            <div className="absolute top-2 left-2 text-[10px] font-mono text-cyan-500/40 select-none">┌</div>
+            <div className="absolute top-2 right-2 text-[10px] font-mono text-cyan-500/40 select-none">┐</div>
+            <div className="absolute bottom-2 left-2 text-[10px] font-mono text-cyan-500/40 select-none">└</div>
+            <div className="absolute bottom-2 right-2 text-[10px] font-mono text-cyan-500/40 select-none">┘</div>
+
+            {/* Live Shaped Avatar Container */}
+            <div className="relative my-2">
               <div 
-                className="w-32 h-32 overflow-hidden bg-slate-950 flex items-center justify-center transition-all duration-150"
+                className="w-36 h-36 sm:w-40 sm:h-40 overflow-hidden bg-slate-900/90 flex items-center justify-center transition-all duration-150 will-change-transform"
                 style={{
                   ...getShapeStyle(currentShape),
                   border: currentBorderWidth > 0 ? `${currentBorderWidth}px solid ${currentBorderColor}` : 'none',
-                  boxShadow: currentBorderWidth > 0 ? `0 0 25px ${currentBorderColor}66` : 'none'
+                  boxShadow: currentBorderWidth > 0 ? `0 0 28px ${currentBorderColor}80` : '0 10px 25px rgba(0,0,0,0.5)'
                 }}
               >
                 <img
                   src={config.avatarUrl || '/suraj-portrait.jpg'}
                   alt={config.displayName || 'Profile Avatar'}
-                  className="w-full h-full object-cover transition-transform duration-150"
+                  className="w-full h-full object-cover transition-transform duration-150 will-change-transform"
+                  loading="eager"
+                  decoding="sync"
                   style={{
                     filter: getFilterStyle(currentStyle),
                     transform: `scale(${currentZoom}) translate(${currentPanX * 15}px, ${currentPanY * 15}px)`
@@ -328,56 +470,74 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                     e.currentTarget.src = '/suraj-portrait.jpg';
                   }}
                 />
-
-                {isProcessing && (
-                  <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center">
-                    <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
-                  </div>
-                )}
               </div>
 
+              {/* Hover Quick Overlay */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[11px] font-semibold gap-1 rounded-2xl cursor-pointer"
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 flex flex-col items-center justify-center text-white text-[11px] font-semibold gap-1 rounded-2xl cursor-pointer"
+                style={getShapeStyle(currentShape)}
               >
-                <Upload className="w-4 h-4" />
-                <span>Upload New</span>
+                <Upload className="w-5 h-5 text-cyan-300" />
+                <span>Replace Photo</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 pt-1">
+            {/* Active Matrix Badge */}
+            <div className="mt-2 text-center">
+              <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 inline-flex items-center gap-1">
+                <span>⚡</span>
+                <span className="uppercase">{currentShape} MATRIX</span>
+                <span>•</span>
+                <span>512×512 HD</span>
+              </span>
+            </div>
+
+            {/* Quick Pedestal Actions */}
+            <div className="flex items-center gap-2 mt-3 w-full justify-center">
               <button
                 type="button"
                 onClick={handleDownloadOptimizedImage}
                 title="Download this styled avatar PNG"
-                className="text-[10px] text-slate-400 hover:text-cyan-300 flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer transition"
+                className="text-xs text-cyan-300 hover:text-white flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-950/60 border border-cyan-700/60 hover:bg-cyan-900/60 cursor-pointer transition font-medium"
               >
-                <Download className="w-3 h-3" />
-                <span>Save PNG</span>
+                <Download className="w-3.5 h-3.5" />
+                <span>Save Masked PNG</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePanChange(0, 0)}
+                title="Center Framing"
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer transition"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Center</span>
               </button>
             </div>
           </div>
 
-          {/* Upload / Link Zone */}
-          <div className="flex-1 w-full space-y-3">
+          {/* Upload / Source Controls (Right Column) */}
+          <div className="lg:col-span-7 space-y-4">
             {uploadMode === 'upload' ? (
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`p-4 rounded-xl border-2 border-dashed cursor-pointer transition text-center flex flex-col items-center justify-center gap-1.5 ${
+                className={`p-5 rounded-2xl border-2 border-dashed cursor-pointer transition text-center flex flex-col items-center justify-center gap-2 ${
                   isDragging
-                    ? 'border-cyan-400 bg-cyan-950/40 text-cyan-200'
-                    : 'border-slate-800 hover:border-slate-700 bg-slate-900/40 hover:bg-slate-900/80 text-slate-400'
+                    ? 'border-cyan-400 bg-cyan-950/50 text-cyan-200'
+                    : 'border-slate-800 hover:border-cyan-500/60 bg-slate-950/60 hover:bg-slate-900/60 text-slate-400'
                 }`}
               >
-                <Upload className="w-5 h-5 text-cyan-400" />
-                <span className="text-xs font-semibold text-white">Click or Drag & Drop photo here</span>
-                <span className="text-[11px] text-slate-500">
-                  Instant client-side optimization • JPG, PNG, WebP up to 15MB
-                </span>
+                <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                  <Upload className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-white block">Drop photo here, or browse files</span>
+                  <span className="text-[11px] text-slate-400">Sub-millisecond 0ms instant display • Up to 20MB JPG, PNG, WebP</span>
+                </div>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -387,86 +547,98 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
                 />
               </div>
             ) : (
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                  <LinkIcon className="w-3 h-3 text-cyan-400" />
-                  <span>Direct Image / Web URL</span>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <LinkIcon className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Direct Web Image URL</span>
                 </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={typeof rawSource === 'string' && !rawSource.startsWith('data:') ? rawSource : ''}
-                    onChange={(e) => {
-                      const url = e.target.value.trim();
-                      if (url) {
-                        onChange({
-                          avatarUrl: url,
-                          avatarRawSource: url,
-                          showAvatarInReadme: true
-                        });
-                        triggerImageOptimization(url, {});
-                      }
-                    }}
-                    placeholder="https://example.com/my-photo.jpg"
-                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={typeof rawSource === 'string' && !rawSource.startsWith('data:') && !rawSource.startsWith('blob:') ? rawSource : ''}
+                  onChange={(e) => {
+                    const url = e.target.value.trim();
+                    if (url) {
+                      onChange({
+                        avatarUrl: url,
+                        avatarRawSource: url,
+                        showAvatarInReadme: true
+                      });
+                    }
+                  }}
+                  placeholder="https://example.com/avatar.jpg"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition-colors"
+                />
+                <span className="text-[11px] text-slate-500 block">
+                  Paste any hosted image URL. Instant dynamic sync without waiting.
+                </span>
               </div>
             )}
 
             {/* Quick Presets */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-[11px] text-slate-500 font-mono">Quick Set:</span>
+              <span className="text-[11px] text-slate-400 font-mono">Quick Load:</span>
               <button
                 type="button"
                 onClick={handleUseSurajPortrait}
-                className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 cursor-pointer transition"
+                className="text-xs font-medium px-3 py-1 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900/60 cursor-pointer transition flex items-center gap-1.5"
               >
-                Suraj's Real Photo
+                <span>👤</span>
+                <span>Suraj's Real Photo</span>
               </button>
               <button
                 type="button"
                 onClick={handleUseGithubAvatar}
-                className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white cursor-pointer transition"
+                className="text-xs font-medium px-3 py-1 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800 hover:text-white cursor-pointer transition flex items-center gap-1.5"
               >
-                Fetch GitHub Avatar
+                <span>🐙</span>
+                <span>GitHub Avatar</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* 1. SHAPE SELECTOR */}
-        <div className="space-y-2 pt-2 border-t border-slate-800/80">
+        {/* 1. SHAPE SELECTOR MATRIX (9 Futuristic Geometric Silhouettes) */}
+        <div className="space-y-3 pt-3 border-t border-slate-800/80">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Avatar Shape</span>
+            <span className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+              <Shield className="w-4 h-4 text-cyan-400" />
+              <span>Avatar Shape & Form Matrix (9 Styles)</span>
             </span>
-            <span className="text-[11px] text-slate-500 capitalize">Active: {currentShape}</span>
+            <span className="text-[11px] text-cyan-400 font-mono">Instant GPU Compositing</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-            {[
-              { id: 'circle', label: 'Circle', icon: '⭕' },
-              { id: 'squircle', label: 'Squircle', icon: '🔲' },
-              { id: 'hexagon', label: 'Hexagon', icon: '⬡' },
-              { id: 'square', label: 'Square', icon: '⏹' },
-              { id: 'diamond', label: 'Diamond', icon: '🔷' }
-            ].map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => handleShapeChange(s.id as any)}
-                className={`py-2 px-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer transition ${
-                  currentShape === s.id
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm font-semibold'
-                    : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-800'
-                }`}
-              >
-                <span>{s.icon}</span>
-                <span>{s.label}</span>
-              </button>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+            {SHAPES_LIST.map((s) => {
+              const isSelected = currentShape === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => handleShapeChange(s.id)}
+                  className={`p-2.5 rounded-xl border text-left flex flex-col justify-between cursor-pointer transition-all ${
+                    isSelected
+                      ? 'bg-cyan-500/15 border-cyan-400 text-white shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400'
+                      : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span className={isSelected ? 'text-cyan-400' : 'text-slate-400'}>
+                      {s.renderSvg(isSelected)}
+                    </span>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold block">{s.label}</span>
+                    <span className="text-[10px] text-slate-500">{s.sublabel}</span>
+                  </div>
+                  <span className={`text-[9px] font-mono mt-1.5 px-1.5 py-0.5 rounded w-fit ${
+                    isSelected ? 'bg-cyan-500/30 text-cyan-200 font-semibold' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    {s.badge}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 

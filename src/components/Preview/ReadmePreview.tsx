@@ -121,9 +121,10 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                   const isAvatar =
                     Boolean(props.alt && (props.alt.toLowerCase().includes('suraj') || props.alt.toLowerCase().includes('avatar'))) ||
                     src.includes('portrait') ||
-                    Boolean(avatarUrl && src === avatarUrl);
+                    Boolean(avatarUrl && src === avatarUrl) ||
+                    src.includes('readmeforge/main/public');
 
-                  if (isAvatar && (!src || src.includes('readmeforge/main/public'))) {
+                  if (isAvatar) {
                     src = avatarUrl || '/suraj-portrait.jpg';
                   }
 
@@ -132,10 +133,13 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                       {...props}
                       src={src}
                       style={props.style}
-                      className="inline-block max-w-full my-1 mr-1.5 align-middle"
+                      className={`inline-block max-w-full my-1 mr-1.5 align-middle ${
+                        isAvatar ? 'transition-all duration-150 will-change-transform' : ''
+                      }`}
                       alt={props.alt || ''}
-                      loading="lazy"
-                      decoding="async"
+                      loading={isAvatar ? 'eager' : 'lazy'}
+                      decoding={isAvatar ? 'sync' : 'async'}
+                      {...(isAvatar ? { fetchPriority: 'high' } : {})}
                       onError={(e) => {
                         if (isAvatar) {
                           e.currentTarget.src = avatarUrl || '/suraj-portrait.jpg';

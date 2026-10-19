@@ -1,5 +1,5 @@
 export interface AvatarProcessingOptions {
-  shape: 'circle' | 'squircle' | 'hexagon' | 'square' | 'diamond';
+  shape: 'circle' | 'squircle' | 'hexagon' | 'square' | 'diamond' | 'shield' | 'octagon' | 'cut-corner' | 'leaf';
   style: 'crisp' | 'cyber-glow' | 'matrix-green' | 'monochrome' | 'synthwave';
   zoom?: number; // 1.0 to 2.5
   panX?: number; // -1 to 1
@@ -129,6 +129,52 @@ export async function optimizeAvatarImage(
         ctx.lineTo(outputSize - pad, center);
         ctx.lineTo(center, outputSize - pad);
         ctx.lineTo(pad, center);
+        ctx.closePath();
+        break;
+      }
+      case 'shield': {
+        const topH = (outputSize - pad * 2) * 0.15;
+        const midH = (outputSize - pad * 2) * 0.65;
+        ctx.moveTo(center, pad);
+        ctx.lineTo(outputSize - pad, pad + topH);
+        ctx.lineTo(outputSize - pad, pad + midH);
+        ctx.quadraticCurveTo(outputSize - pad, outputSize - pad, center, outputSize - pad);
+        ctx.quadraticCurveTo(pad, outputSize - pad, pad, pad + midH);
+        ctx.lineTo(pad, pad + topH);
+        ctx.closePath();
+        break;
+      }
+      case 'octagon': {
+        const chamfer = (outputSize - pad * 2) * 0.28;
+        ctx.moveTo(pad + chamfer, pad);
+        ctx.lineTo(outputSize - pad - chamfer, pad);
+        ctx.lineTo(outputSize - pad, pad + chamfer);
+        ctx.lineTo(outputSize - pad, outputSize - pad - chamfer);
+        ctx.lineTo(outputSize - pad - chamfer, outputSize - pad);
+        ctx.lineTo(pad + chamfer, outputSize - pad);
+        ctx.lineTo(pad, outputSize - pad - chamfer);
+        ctx.lineTo(pad, pad + chamfer);
+        ctx.closePath();
+        break;
+      }
+      case 'cut-corner': {
+        const cut = (outputSize - pad * 2) * 0.18;
+        ctx.moveTo(pad + cut, pad);
+        ctx.lineTo(outputSize - pad, pad);
+        ctx.lineTo(outputSize - pad, outputSize - pad - cut);
+        ctx.lineTo(outputSize - pad - cut, outputSize - pad);
+        ctx.lineTo(pad, outputSize - pad);
+        ctx.lineTo(pad, pad + cut);
+        ctx.closePath();
+        break;
+      }
+      case 'leaf': {
+        const r = (outputSize - pad * 2) * 0.45;
+        ctx.moveTo(pad + 12, pad + 12);
+        ctx.lineTo(outputSize - pad - r, pad);
+        ctx.arcTo(outputSize - pad, pad, outputSize - pad, outputSize - pad, r);
+        ctx.arcTo(outputSize - pad, outputSize - pad, pad, outputSize - pad, r);
+        ctx.arcTo(pad, outputSize - pad, pad, pad, r);
         ctx.closePath();
         break;
       }

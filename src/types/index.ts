@@ -81,7 +81,7 @@ export interface ProfileConfig {
   showAsciiHologram?: boolean;
   asciiDotColor?: string;
   showAvatarInReadme?: boolean;
-  avatarShape?: 'circle' | 'squircle' | 'hexagon' | 'square' | 'diamond';
+  avatarShape?: 'circle' | 'squircle' | 'hexagon' | 'square' | 'diamond' | 'shield' | 'octagon' | 'cut-corner' | 'leaf';
   avatarStyle?: 'crisp' | 'cyber-glow' | 'matrix-green' | 'monochrome' | 'synthwave';
   avatarBorderColor?: string;
   avatarBorderWidth?: number;

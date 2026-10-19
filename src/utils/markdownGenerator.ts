@@ -42,7 +42,15 @@ export function generateMarkdown(config: ProfileConfig): string {
         ? 'clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);'
         : config.avatarShape === 'hexagon'
         ? 'clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);'
-        : '';
+        : config.avatarShape === 'shield'
+        ? 'clip-path: polygon(50% 0%, 100% 15%, 100% 68%, 50% 100%, 0% 68%, 0% 15%);'
+        : config.avatarShape === 'octagon'
+        ? 'clip-path: polygon(28% 0%, 72% 0%, 100% 28%, 100% 72%, 72% 100%, 28% 100%, 0% 72%, 0% 28%);'
+        : config.avatarShape === 'cut-corner'
+        ? 'clip-path: polygon(18% 0, 100% 0, 100% 82%, 82% 100%, 0 100%, 0 18%);'
+        : config.avatarShape === 'leaf'
+        ? 'border-radius: 4px 50% 50% 50%;'
+        : 'border-radius: 50%;';
 
     const filterStyle =
       config.avatarStyle === 'cyber-glow'
