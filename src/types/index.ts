@@ -80,7 +80,14 @@ export interface ProfileConfig {
   showAsciiHologram?: boolean;
   asciiDotColor?: string;
   showAvatarInReadme?: boolean;
-  avatarShape?: 'circle' | 'rounded' | 'square';
+  avatarShape?: 'circle' | 'squircle' | 'hexagon' | 'square' | 'diamond';
+  avatarStyle?: 'crisp' | 'cyber-glow' | 'matrix-green' | 'monochrome' | 'synthwave';
+  avatarBorderColor?: string;
+  avatarBorderWidth?: number;
+  avatarZoom?: number;
+  avatarPanX?: number;
+  avatarPanY?: number;
+  avatarRawSource?: string;
   avatarWidth?: number;
   
   // Bio Bullets

@@ -161,6 +161,9 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
                 className={`w-full aspect-square rounded-full object-cover border-2 ${
                   isDark ? 'border-[#30363d]' : 'border-[#d0d7de]'
                 }`}
+                onError={(e) => {
+                  e.currentTarget.src = '/suraj-portrait.jpg';
+                }}
               />
               <div className={`absolute bottom-2 right-2 p-1.5 rounded-full border shadow-md flex items-center justify-center ${
                 isDark ? 'bg-[#161b22] border-[#30363d]' : 'bg-white border-[#d0d7de]'
@@ -278,10 +281,16 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
                       return (
                         <img
                           {...props}
-                          className="inline-block max-w-full my-1 mr-1.5 rounded align-middle"
+                          style={props.style}
+                          className="inline-block max-w-full my-1 mr-1.5 align-middle"
                           alt={props.alt || ''}
                           loading="lazy"
                           decoding="async"
+                          onError={(e) => {
+                            if (props.src && (props.src.includes('avatar') || props.src.includes('portrait'))) {
+                              e.currentTarget.src = '/suraj-portrait.jpg';
+                            }
+                          }}
                         />
                       );
                     },

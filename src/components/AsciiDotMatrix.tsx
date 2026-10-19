@@ -30,7 +30,14 @@ export const AsciiDotMatrix: React.FC<AsciiDotMatrixProps> = ({
     if (!ctx) return;
 
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (!imageSrc.startsWith('data:') && !imageSrc.startsWith('blob:')) {
+      img.crossOrigin = 'anonymous';
+    }
+    img.onerror = () => {
+      if (img.src !== window.location.origin + '/suraj-portrait.jpg' && !img.src.includes('suraj-portrait.jpg')) {
+        img.src = '/suraj-portrait.jpg';
+      }
+    };
     img.src = imageSrc;
 
     let scanY = 0;

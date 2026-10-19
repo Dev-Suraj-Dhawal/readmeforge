@@ -18,15 +18,21 @@ export function generateMarkdown(config: ProfileConfig): string {
     const shapeStyle =
       config.avatarShape === 'circle'
         ? 'border-radius: 50%;'
-        : config.avatarShape === 'rounded'
-        ? 'border-radius: 20px;'
-        : 'border-radius: 8px;';
+        : config.avatarShape === 'squircle'
+        ? 'border-radius: 24%;'
+        : config.avatarShape === 'square'
+        ? 'border-radius: 12px;'
+        : '';
     const width = config.avatarWidth || 160;
     const avatarSrc = config.avatarUrl.startsWith('/')
       ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
       : config.avatarUrl;
 
-    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} object-fit: cover; border: 2px solid #00FF66;" />\n</p>\n`);
+    const borderColor = config.avatarBorderColor || '#00FF66';
+    const borderWidth = typeof config.avatarBorderWidth === 'number' ? config.avatarBorderWidth : 3;
+    const borderStyle = borderWidth > 0 ? `border: ${borderWidth}px solid ${borderColor};` : '';
+
+    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} object-fit: cover;" />\n</p>\n`);
   }
 
   // Profile Views Badge & Status

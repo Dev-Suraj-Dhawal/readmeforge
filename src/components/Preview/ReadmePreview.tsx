@@ -119,10 +119,16 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                   return (
                     <img
                       {...props}
-                      className="inline-block max-w-full my-1 mr-1.5 rounded align-middle"
+                      style={props.style}
+                      className="inline-block max-w-full my-1 mr-1.5 align-middle"
                       alt={props.alt || ''}
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        if (props.src && (props.src.includes('avatar') || props.src.includes('portrait'))) {
+                          e.currentTarget.src = '/suraj-portrait.jpg';
+                        }
+                      }}
                     />
                   );
                 },
@@ -143,4 +149,3 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
     </div>
   );
 };
-
