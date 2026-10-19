@@ -46,7 +46,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all ${
                 selectedCategory === cat
                   ? 'bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/20'
                   : 'bg-slate-800/70 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-700/60'
@@ -129,7 +129,7 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 {/* Action button */}
                 <button
                   onClick={() => onSelectTemplate(template)}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
                     isActive
                       ? 'bg-slate-800 text-cyan-300 border border-cyan-500/40 hover:bg-slate-700'
                       : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:brightness-110 shadow-lg shadow-cyan-500/20'

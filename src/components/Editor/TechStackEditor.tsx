@@ -82,32 +82,32 @@ export const TechStackEditor: React.FC<TechStackEditorProps> = ({ config, onChan
         </span>
         <button
           onClick={() => applyPreset(['typescript', 'javascript', 'react', 'nextjs', 'tailwind', 'nodejs', 'postgresql', 'docker', 'git'])}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition"
         >
           Full-Stack Web
         </button>
         <button
           onClick={() => applyPreset(['python', 'pytorch', 'tensorflow', 'huggingface', 'openai', 'pandas', 'numpy', 'docker'])}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition"
         >
           AI & ML Engineer
         </button>
         <button
           onClick={() => applyPreset(['rust', 'go', 'cpp', 'linux', 'docker', 'kubernetes', 'postgresql', 'git', 'neovim'])}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition"
         >
           Systems & Cyber
         </button>
         <button
           onClick={() => applyPreset(['docker', 'kubernetes', 'aws', 'gcp', 'linux', 'githubactions', 'terraform', 'nginx'])}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer transition"
         >
           DevOps & Cloud
         </button>
         {config.techBadges.length > 0 && (
           <button
             onClick={clearAll}
-            className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-red-950/40 text-red-400 border border-red-800/40 hover:bg-red-900/40 transition ml-auto"
+            className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-red-950/40 text-red-400 border border-red-800/40 hover:bg-red-900/40 cursor-pointer transition ml-auto"
           >
             Clear Selected
           </button>
@@ -133,7 +133,7 @@ export const TechStackEditor: React.FC<TechStackEditorProps> = ({ config, onChan
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium cursor-pointer transition ${
                 activeCategory === cat.id
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
                   : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-slate-300 border border-slate-800'
@@ -207,7 +207,7 @@ export const TechStackEditor: React.FC<TechStackEditorProps> = ({ config, onChan
             <button
               key={b.id}
               onClick={() => toggleBadge(b.id)}
-              className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
+              className={`flex items-center justify-between p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                 isSelected
                   ? 'bg-cyan-950/50 border-cyan-500 text-white shadow-sm shadow-cyan-500/20'
                   : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200 hover:bg-slate-900'

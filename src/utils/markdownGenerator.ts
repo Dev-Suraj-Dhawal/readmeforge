@@ -22,9 +22,25 @@ export function generateMarkdown(config: ProfileConfig): string {
         ? 'border-radius: 26%;'
         : config.avatarShape === 'square'
         ? 'border-radius: 14px;'
+        : config.avatarShape === 'diamond'
+        ? 'clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);'
         : config.avatarShape === 'hexagon'
         ? 'clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);'
         : '';
+
+    const filterStyle =
+      config.avatarStyle === 'cyber-glow'
+        ? 'filter: saturate(1.35) contrast(1.15);'
+        : config.avatarStyle === 'matrix-green'
+        ? 'filter: sepia(1) hue-rotate(80deg) saturate(2.5) contrast(1.2);'
+        : config.avatarStyle === 'monochrome'
+        ? 'filter: grayscale(1) contrast(1.2);'
+        : config.avatarStyle === 'synthwave'
+        ? 'filter: saturate(1.5) hue-rotate(295deg) contrast(1.2);'
+        : config.avatarStyle === 'crisp'
+        ? 'filter: contrast(1.06) brightness(1.02) saturate(1.05);'
+        : '';
+
     const width = config.avatarWidth || 160;
     const avatarSrc = config.avatarUrl.startsWith('/')
       ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
@@ -35,7 +51,7 @@ export function generateMarkdown(config: ProfileConfig): string {
     const borderStyle = borderWidth > 0 ? `border: ${borderWidth}px solid ${borderColor};` : '';
     const glowStyle = borderWidth > 0 ? `box-shadow: 0 0 25px ${borderColor}66;` : '';
 
-    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} ${glowStyle} object-fit: cover;" />\n</p>\n`);
+    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} ${glowStyle} ${filterStyle} object-fit: cover;" />\n</p>\n`);
   }
 
   // Profile Views Badge & Status

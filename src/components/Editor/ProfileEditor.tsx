@@ -137,7 +137,6 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
           avatarUrl: resultStr,
           showAvatarInReadme: true
         });
-        triggerImageOptimization(file, {});
       }
     };
     reader.readAsDataURL(file);
@@ -183,71 +182,76 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
 
   const handleShapeChange = (shape: ProfileConfig['avatarShape']) => {
     onChange({ avatarShape: shape });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { shape });
-    }
   };
 
   const handleStyleChange = (style: ProfileConfig['avatarStyle']) => {
     onChange({ avatarStyle: style });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { style });
-    }
   };
 
   const handleColorChange = (borderColor: string) => {
     onChange({ avatarBorderColor: borderColor });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { borderColor });
-    }
   };
 
   const handleBorderWidthChange = (borderWidth: number) => {
     onChange({ avatarBorderWidth: borderWidth });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { borderWidth });
-    }
   };
 
   const handleZoomChange = (zoom: number) => {
     onChange({ avatarZoom: zoom });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { zoom });
-    }
   };
 
   const handlePanChange = (panX: number, panY: number) => {
     onChange({ avatarPanX: panX, avatarPanY: panY });
-    if (rawSource.startsWith('data:') || rawSource.startsWith('blob:')) {
-      triggerImageOptimization(rawSource, { panX, panY });
+  };
+
+  const handleDownloadOptimizedImage = async () => {
+    const src = config.avatarRawSource || config.avatarUrl || '/suraj-portrait.jpg';
+    setIsProcessing(true);
+    try {
+      const optimized = await optimizeAvatarImage(src, {
+        shape: currentShape,
+        style: currentStyle,
+        zoom: currentZoom,
+        panX: currentPanX,
+        panY: currentPanY,
+        borderColor: currentBorderColor,
+        borderWidth: currentBorderWidth,
+        outputSize: 512
+      });
+      const a = document.createElement('a');
+      a.href = optimized;
+      a.download = `${config.githubUsername || 'avatar'}-${currentShape}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('Failed to export avatar image', err);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handleDownloadOptimizedImage = () => {
-    if (!config.avatarUrl) return;
-    const a = document.createElement('a');
-    a.href = config.avatarUrl;
-    a.download = `${config.githubUsername || 'avatar'}-${currentShape}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  // Instant CSS mapping functions for 0ms sub-millisecond responsiveness
+  const getShapeStyle = (shape: string) => {
+    switch (shape) {
+      case 'circle': return { borderRadius: '50%' };
+      case 'squircle': return { borderRadius: '26%' };
+      case 'square': return { borderRadius: '14px' };
+      case 'diamond': return { clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' };
+      case 'hexagon': return { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
+      default: return { borderRadius: '50%' };
+    }
   };
 
-  // Preview styling calculations
-  const previewShapeClass =
-    currentShape === 'circle'
-      ? 'rounded-full'
-      : currentShape === 'squircle'
-      ? 'rounded-3xl'
-      : currentShape === 'square'
-      ? 'rounded-xl'
-      : currentShape === 'diamond'
-      ? 'rotate-45 scale-90 rounded-lg'
-      : 'rounded-none';
-
-  const previewHexagonClip = currentShape === 'hexagon'
-    ? { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }
-    : {};
+  const getFilterStyle = (style: string) => {
+    switch (style) {
+      case 'cyber-glow': return 'saturate(1.35) contrast(1.15)';
+      case 'matrix-green': return 'sepia(1) hue-rotate(80deg) saturate(2.5) contrast(1.2)';
+      case 'monochrome': return 'grayscale(1) contrast(1.2)';
+      case 'synthwave': return 'saturate(1.5) hue-rotate(295deg) contrast(1.2)';
+      case 'crisp': default: return 'contrast(1.06) brightness(1.02) saturate(1.05)';
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -305,19 +309,21 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
           <div className="flex flex-col items-center gap-2 shrink-0">
             <div className="relative group p-1">
               <div 
-                className={`w-32 h-32 overflow-hidden bg-slate-950 flex items-center justify-center transition-all duration-200 ${previewShapeClass}`}
+                className="w-32 h-32 overflow-hidden bg-slate-950 flex items-center justify-center transition-all duration-150"
                 style={{
+                  ...getShapeStyle(currentShape),
                   border: currentBorderWidth > 0 ? `${currentBorderWidth}px solid ${currentBorderColor}` : 'none',
-                  boxShadow: currentBorderWidth > 0 ? `0 0 25px ${currentBorderColor}55` : 'none',
-                  ...previewHexagonClip
+                  boxShadow: currentBorderWidth > 0 ? `0 0 25px ${currentBorderColor}66` : 'none'
                 }}
               >
                 <img
                   src={config.avatarUrl || '/suraj-portrait.jpg'}
                   alt={config.displayName || 'Profile Avatar'}
-                  className={`w-full h-full object-cover transition-transform duration-200 ${
-                    currentShape === 'diamond' ? '-rotate-45 scale-125' : ''
-                  }`}
+                  className="w-full h-full object-cover transition-transform duration-150"
+                  style={{
+                    filter: getFilterStyle(currentStyle),
+                    transform: `scale(${currentZoom}) translate(${currentPanX * 15}px, ${currentPanY * 15}px)`
+                  }}
                   onError={(e) => {
                     e.currentTarget.src = '/suraj-portrait.jpg';
                   }}
