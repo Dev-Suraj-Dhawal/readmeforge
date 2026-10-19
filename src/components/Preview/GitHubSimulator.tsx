@@ -30,9 +30,7 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
 
   const username = config.githubUsername || 'your-username';
   const displayName = config.displayName || username;
-  const avatarUrl =
-    config.avatarUrl ||
-    `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80`;
+  const avatarUrl = config.avatarUrl || '/suraj-portrait.jpg';
 
   // Realistic mock contributions grid for simulation
   const contributionWeeks = Array.from({ length: 50 }, (_, w) =>
@@ -273,7 +271,7 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
                       if (src.includes('ascii-portrait.png')) {
                         return (
                           <div className="my-4 flex justify-center w-full">
-                            <AsciiDotMatrix imageSrc="/ascii-portrait.png" className="max-w-md w-full" />
+                            <AsciiDotMatrix imageSrc={config.avatarUrl || '/suraj-portrait.jpg'} className="max-w-md w-full" />
                           </div>
                         );
                       }

@@ -309,6 +309,7 @@ export default function App() {
                   <ReadmePreview
                     markdown={generatedMarkdown}
                     username={config.githubUsername}
+                    avatarUrl={config.avatarUrl}
                     onCopy={handleCopyMarkdown}
                     onDownload={handleDownloadMarkdown}
                   />

@@ -79,6 +79,9 @@ export interface ProfileConfig {
   typingFont: string;
   showAsciiHologram?: boolean;
   asciiDotColor?: string;
+  showAvatarInReadme?: boolean;
+  avatarShape?: 'circle' | 'rounded' | 'square';
+  avatarWidth?: number;
   
   // Bio Bullets
   workingOn: string;

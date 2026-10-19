@@ -9,6 +9,7 @@ import { AsciiDotMatrix } from '../AsciiDotMatrix';
 interface ReadmePreviewProps {
   markdown: string;
   username: string;
+  avatarUrl?: string;
   onCopy: () => void;
   onDownload: () => void;
 }
@@ -16,6 +17,7 @@ interface ReadmePreviewProps {
 export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
   markdown,
   username,
+  avatarUrl,
   onCopy,
   onDownload
 }) => {
@@ -110,7 +112,7 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                   if (src.includes('ascii-portrait.png')) {
                     return (
                       <div className="my-4 flex justify-center w-full">
-                        <AsciiDotMatrix imageSrc="/ascii-portrait.png" className="max-w-md w-full" />
+                        <AsciiDotMatrix imageSrc={avatarUrl || '/suraj-portrait.jpg'} className="max-w-md w-full" />
                       </div>
                     );
                   }

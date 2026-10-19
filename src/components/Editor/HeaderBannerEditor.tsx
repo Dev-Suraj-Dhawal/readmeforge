@@ -118,7 +118,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
           </div>
 
           <AsciiDotMatrix
-            imageSrc="/ascii-portrait.png"
+            imageSrc={config.avatarUrl || '/suraj-portrait.jpg'}
             dotColor={`#${config.typingColor.replace('#', '') || '00FF66'}`}
             className="my-2"
           />

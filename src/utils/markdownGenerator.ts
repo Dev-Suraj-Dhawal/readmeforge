@@ -13,6 +13,22 @@ export function generateMarkdown(config: ProfileConfig): string {
     lines.push(`<h3 align="center">${config.headline}</h3>`);
   }
 
+  // Profile Picture in README (if enabled)
+  if (config.showAvatarInReadme && config.avatarUrl) {
+    const shapeStyle =
+      config.avatarShape === 'circle'
+        ? 'border-radius: 50%;'
+        : config.avatarShape === 'rounded'
+        ? 'border-radius: 20px;'
+        : 'border-radius: 8px;';
+    const width = config.avatarWidth || 160;
+    const avatarSrc = config.avatarUrl.startsWith('/')
+      ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
+      : config.avatarUrl;
+
+    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} object-fit: cover; border: 2px solid #00FF66;" />\n</p>\n`);
+  }
+
   // Profile Views Badge & Status
   const statusBadges: string[] = [];
   if (config.stats.showProfileViews) {
