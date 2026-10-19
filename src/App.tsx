@@ -31,7 +31,7 @@ import {
   Layers
 } from 'lucide-react';
 
-const STORAGE_KEY = 'readme_forge_config_v2';
+const STORAGE_KEY = 'readme_forge_config_v4_suraj';
 
 export default function App() {
   // Initial state from localStorage or Default Cyberpunk template

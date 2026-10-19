@@ -72,11 +72,13 @@ export interface ProfileConfig {
   
   // Header & Aesthetics
   themeAesthetic: 'cyberpunk' | 'minimal' | 'lofi' | 'gamified' | 'matrix' | 'dracula';
-  bannerType: 'typing' | 'wave' | 'retro' | 'custom' | 'minimal';
+  bannerType: 'typing' | 'wave' | 'retro' | 'custom' | 'minimal' | 'ascii-dots';
   customBannerUrl?: string;
   typingText: string[];
   typingColor: string;
   typingFont: string;
+  showAsciiHologram?: boolean;
+  asciiDotColor?: string;
   
   // Bio Bullets
   workingOn: string;

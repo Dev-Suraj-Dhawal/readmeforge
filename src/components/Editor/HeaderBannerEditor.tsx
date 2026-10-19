@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ProfileConfig } from '../../types';
-import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon, Scan } from 'lucide-react';
+import { AsciiDotMatrix } from '../AsciiDotMatrix';
 
 interface HeaderBannerEditorProps {
   config: ProfileConfig;
@@ -11,6 +12,7 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
   const [newLineText, setNewLineText] = useState('');
 
   const bannerTypes = [
+    { id: 'ascii-dots', label: 'Holographic ASCII Dots', desc: 'Matrix green dot matrix portrait animation' },
     { id: 'typing', label: 'Animated Typing SVG', desc: 'Sleek typewriter animation of multiple roles/lines' },
     { id: 'wave', label: 'Dynamic Wave Banner', desc: 'Flowing animated gradient wave with your name' },
     { id: 'retro', label: 'Retro Capsule', desc: 'Smooth time-gradient capsule header' },
@@ -104,8 +106,31 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
         </div>
       )}
 
+      {/* Holographic ASCII Dot Matrix Preview */}
+      {config.bannerType === 'ascii-dots' && (
+        <div className="space-y-4 p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/30">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-emerald-400 flex items-center gap-2">
+              <Scan className="w-3.5 h-3.5" />
+              <span>Interactive ASCII Dot Matrix Hologram</span>
+            </span>
+            <span className="text-[11px] font-mono text-emerald-400">Active</span>
+          </div>
+
+          <AsciiDotMatrix
+            imageSrc="/ascii-portrait.png"
+            dotColor={`#${config.typingColor.replace('#', '') || '00FF66'}`}
+            className="my-2"
+          />
+
+          <p className="text-[11px] text-slate-400">
+            This dot matrix animation transforms portrait pixels into responsive ASCII dot values with vertical laser scanning.
+          </p>
+        </div>
+      )}
+
       {/* Animated Typing SVG Options */}
-      {config.bannerType === 'typing' && (
+      {(config.bannerType === 'typing' || config.bannerType === 'ascii-dots') && (
         <div className="space-y-4 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
           <div className="flex items-center justify-between">
             <label className="text-xs font-semibold text-slate-200 flex items-center gap-2">

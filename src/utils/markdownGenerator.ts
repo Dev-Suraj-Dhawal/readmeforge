@@ -30,8 +30,13 @@ export function generateMarkdown(config: ProfileConfig): string {
     lines.push(`<p align="center">\n  ${statusBadges.join('\n  ')}\n</p>\n`);
   }
 
+  // Holographic ASCII Dot Matrix Portrait Banner
+  if (config.bannerType === 'ascii-dots' || config.showAsciiHologram) {
+    lines.push(`<p align="center">\n  <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="340" alt="Holographic ASCII Dot Matrix" />\n</p>\n`);
+  }
+
   // Animated Typing Header Banner
-  if (config.bannerType === 'typing' && config.typingText.length > 0) {
+  if ((config.bannerType === 'typing' || config.bannerType === 'ascii-dots') && config.typingText.length > 0) {
     const encodedLines = config.typingText.map((t) => encodeURIComponent(t)).join(';');
     const font = encodeURIComponent(config.typingFont || 'Fira Code');
     const color = config.typingColor.replace('#', '') || '00FF66';

@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Eye, Code2, Copy, Check, Download, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { AsciiDotMatrix } from '../AsciiDotMatrix';
 
 interface ReadmePreviewProps {
   markdown: string;
@@ -104,9 +105,25 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}
               components={{
-                img: ({ node, ...props }) => (
-                  <img {...props} className="inline-block max-w-full my-1 mr-1.5 rounded align-middle" alt={props.alt || ''} loading="lazy" decoding="async" />
-                ),
+                img: ({ node, ...props }) => {
+                  const src = props.src || '';
+                  if (src.includes('ascii-portrait.png')) {
+                    return (
+                      <div className="my-4 flex justify-center w-full">
+                        <AsciiDotMatrix imageSrc="/ascii-portrait.png" className="max-w-md w-full" />
+                      </div>
+                    );
+                  }
+                  return (
+                    <img
+                      {...props}
+                      className="inline-block max-w-full my-1 mr-1.5 rounded align-middle"
+                      alt={props.alt || ''}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  );
+                },
                 a: ({ node, ...props }) => (
                   <a {...props} className="text-[#58a6ff] hover:underline" target="_blank" rel="noreferrer" />
                 )

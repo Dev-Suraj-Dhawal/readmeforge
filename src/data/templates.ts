@@ -10,43 +10,45 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
     tags: ['Neon', 'Matrix', 'Terminal', 'Animated Snake', 'Dark Mode'],
     previewGradient: 'from-emerald-950 via-slate-900 to-cyan-950 border-emerald-500/30',
     config: {
-      githubUsername: 'matrix-dev',
-      displayName: 'Neo Vance',
-      headline: 'Senior Systems Architect & Cybernetic Engineer // Breaking the Simulation',
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
-      location: 'Zion // Decentralized Mesh',
-      company: 'NeuralNet Protocol',
-      website: 'https://matrix-dev.io',
-      pronouns: 'they/them',
+      githubUsername: 'Dev-Suraj-Dhawal',
+      displayName: 'Suraj Dhawal',
+      headline: 'Full-Stack Developer & Systems Architect // Building Scalable Software',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/195623319?v=4',
+      location: 'Nepal // Remote',
+      company: 'Open Source Architect',
+      website: 'https://surajdhawal.com.np/',
+      pronouns: 'he/him',
       availableForHire: true,
       themeAesthetic: 'matrix',
-      bannerType: 'typing',
+      bannerType: 'ascii-dots',
+      showAsciiHologram: true,
+      asciiDotColor: '#00FF66',
       typingText: [
-        'Decentralized Infrastructure Architect',
-        'Rust & High-Throughput Distributed Systems',
-        'Breaking cryptography before breakfast ⚡',
-        'Kernel hacker & low-latency protocol tuner'
+        'Full-Stack Developer & Systems Architect',
+        'React, TypeScript, Node.js & Cloud Infrastructure',
+        'Crafting crazy aesthetic developer tools ⚡',
+        'Open Source Contributor & Problem Solver'
       ],
       typingColor: '00FF66',
       typingFont: 'Fira+Code',
-      workingOn: 'Next-gen zero-knowledge mesh protocol with sub-millisecond finality',
-      learning: 'Quantum-resistant lattice cryptography and eBPF kernel tracing',
-      collaborateOn: 'High-performance distributed systems, Rust crates, and open cyber tools',
-      askMeAbout: 'Rust, Concurrency, Distributed Consensus, Linux Internals, Cyber Defense',
-      reachMe: 'matrix: @neovance:matrix.org | encrypted mail: neo@neovance.io',
-      funFact: 'I compile Linux kernels for fun while listening to dark ambient synthwave.',
-      quote: 'The function of good software is to make the complex appear effortless.',
-      quoteAuthor: 'Anonymous Cyberneticist',
+      workingOn: 'Next-gen developer tooling and ultra-scalable web platforms',
+      learning: 'Distributed systems, WebAssembly runtimes, and eBPF instrumentation',
+      collaborateOn: 'High-impact open source tools, developer utilities, and modern SaaS',
+      askMeAbout: 'TypeScript, React, Node.js, System Architecture, UI/UX Craftsmanship',
+      reachMe: 'https://github.com/Dev-Suraj-Dhawal | blog: https://surajdhawal.com.np/',
+      funFact: 'I convert complex ideas into elegant, high-performance code.',
+      quote: 'Simplicity is prerequisite for reliability.',
+      quoteAuthor: 'Edsger W. Dijkstra',
       techBadges: [
-        'rust', 'go', 'typescript', 'python', 'docker', 'kubernetes', 'linux',
-        'postgresql', 'redis', 'graphql', 'cloudflare', 'githubactions'
+        'typescript', 'javascript', 'react', 'nextjs', 'nodejs', 'python', 'rust',
+        'docker', 'postgresql', 'redis', 'tailwind', 'git', 'githubactions'
       ],
       badgeStyle: 'for-the-badge',
       socials: [
-        { platform: 'GitHub', username: 'matrix-dev', url: 'https://github.com/matrix-dev', enabled: true },
-        { platform: 'X / Twitter', username: 'matrix_dev', url: 'https://x.com/matrix_dev', enabled: true },
-        { platform: 'LinkedIn', username: 'neovance', url: 'https://linkedin.com/in/neovance', enabled: true },
-        { platform: 'Discord', username: 'neo#0001', url: 'https://discord.com', enabled: true }
+        { platform: 'GitHub', username: 'Dev-Suraj-Dhawal', url: 'https://github.com/Dev-Suraj-Dhawal', enabled: true },
+        { platform: 'LinkedIn', username: 'surajdhawal', url: 'https://linkedin.com/in/surajdhawal', enabled: true },
+        { platform: 'Website', username: 'surajdhawal.com.np', url: 'https://surajdhawal.com.np/', enabled: true },
+        { platform: 'Discord', username: 'suraj#0001', url: 'https://discord.com', enabled: true }
       ],
       stats: {
         showStatsCard: true,
@@ -69,25 +71,33 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       projects: [
         {
           id: 'p1',
-          title: '⚡ HyperNet-Kernel',
-          description: 'Ultra-low latency actor-runtime engine written in Rust processing 10M msg/sec.',
-          tech: ['Rust', 'eBPF', 'Tokio'],
-          repoUrl: 'https://github.com/matrix-dev/hypernet-kernel',
-          liveUrl: 'https://hypernet.dev',
-          stars: 1420
+          title: '⚡ ReadmeForge Studio',
+          description: 'Next-Gen Aesthetic GitHub Profile README Architect with real-time GitHub simulation.',
+          tech: ['React', 'TypeScript', 'Tailwind', 'Vite'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/readmeforge',
+          liveUrl: 'https://readme-gray-gamma.vercel.app',
+          stars: 128
         },
         {
           id: 'p2',
-          title: '🛡️ CipherMesh',
-          description: 'Peer-to-peer end-to-end encrypted protocol with zero trust architecture.',
-          tech: ['Go', 'Wasm', 'Cryptography'],
-          repoUrl: 'https://github.com/matrix-dev/cipher-mesh',
-          stars: 890
+          title: '🛠️ TerraForge Studio',
+          description: 'Modern infrastructure management and automated deployment platform.',
+          tech: ['TypeScript', 'Cloud', 'Automation'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/terraforge-studio',
+          stars: 94
+        },
+        {
+          id: 'p3',
+          title: '🧠 OpenReview AI',
+          description: 'Automated pull-request review and intelligent code feedback assistant.',
+          tech: ['Python', 'AI/ML', 'GitHub API'],
+          repoUrl: 'https://github.com/Dev-Suraj-Dhawal/openreview-ai',
+          stars: 87
         }
       ],
       support: [
-        { platform: 'buymeacoffee', username: 'matrixdev', enabled: true },
-        { platform: 'github', username: 'matrix-dev', enabled: true }
+        { platform: 'buymeacoffee', username: 'surajdhawal', enabled: true },
+        { platform: 'github', username: 'Dev-Suraj-Dhawal', enabled: true }
       ],
       customMarkdown: ''
     }
