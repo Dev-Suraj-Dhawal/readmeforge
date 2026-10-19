@@ -112,8 +112,13 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                   let src = props.src || '';
                   if (src.includes('ascii-portrait.png')) {
                     return (
-                      <div className="my-4 flex justify-center w-full">
-                        <AsciiDotMatrix imageSrc={avatarUrl || '/suraj-portrait.jpg'} className="max-w-md w-full" />
+                      <div className="my-1 flex justify-center w-full">
+                        <AsciiDotMatrix 
+                          imageSrc={avatarUrl || '/suraj-portrait.jpg'} 
+                          hideHeader={true}
+                          hideControls={true}
+                          className="w-full bg-black border-0 shadow-none" 
+                        />
                       </div>
                     );
                   }
@@ -148,15 +153,26 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                     />
                   );
                 },
-                h1: ({ node, ...props }) => (
-                  <div className="my-5 text-center">
-                    <h1
-                      {...props}
-                      className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent inline-flex items-center justify-center gap-2 border-b-0 pb-0"
-                    />
-                    <div className="h-0.5 w-24 mx-auto mt-2 rounded-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-blue-500 shadow-md shadow-cyan-500/50" />
-                  </div>
-                ),
+                h1: ({ node, ...props }) => {
+                  if (props.style?.color) {
+                    return (
+                      <h1
+                        {...props}
+                        style={props.style}
+                        className="text-2xl sm:text-3xl font-extrabold tracking-tight inline-block border-b-0 pb-0 my-2"
+                      />
+                    );
+                  }
+                  return (
+                    <div className="my-5 text-center">
+                      <h1
+                        {...props}
+                        className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent inline-flex items-center justify-center gap-2 border-b-0 pb-0"
+                      />
+                      <div className="h-0.5 w-24 mx-auto mt-2 rounded-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-blue-500 shadow-md shadow-cyan-500/50" />
+                    </div>
+                  );
+                },
                 h3: ({ node, ...props }) => (
                   <div className="my-3 text-center">
                     <h3

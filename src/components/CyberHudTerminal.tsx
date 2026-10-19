@@ -52,13 +52,13 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
 
       {/* Crosshair Lateral Reticles on Border */}
       <div 
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#04080e] border border-current flex items-center justify-center text-[10px] select-none z-10"
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#04080e] border border-current items-center justify-center text-[10px] select-none z-10 hidden sm:flex"
         style={{ color: activeColor }}
       >
         ┼
       </div>
       <div 
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 rounded-full bg-[#04080e] border border-current flex items-center justify-center text-[10px] select-none z-10"
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 rounded-full bg-[#04080e] border border-current items-center justify-center text-[10px] select-none z-10 hidden sm:flex"
         style={{ color: activeColor }}
       >
         ┼
@@ -87,13 +87,13 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
           </div>
 
           {/* Hero Display Name with Blinking Cursor */}
-          <h2 
+          <div 
             className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight uppercase leading-tight"
             style={{ color: activeColor, textShadow: `0 0 12px ${activeColor}66` }}
           >
             {name}
-            <span className="animate-pulse inline-block ml-0.5">_</span>
-          </h2>
+            <span className="animate-pulse inline-block ml-0.5" style={{ color: activeColor }}>_</span>
+          </div>
 
           {/* Subtitle / Headline */}
           <p 
@@ -108,15 +108,15 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
             {techNames.map((tech, idx) => (
               <span
                 key={idx}
-                className="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-transform hover:scale-105"
+                className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold border transition-transform hover:scale-105 select-none"
                 style={{
-                  borderColor: `${activeColor}66`,
-                  backgroundColor: `${activeColor}15`,
+                  borderColor: `${activeColor}55`,
+                  backgroundColor: `${activeColor}12`,
                   color: activeColor,
-                  boxShadow: `0 0 8px ${activeColor}22`
+                  boxShadow: `0 0 8px ${activeColor}20`
                 }}
               >
-                {tech}
+                [ {tech} ]
               </span>
             ))}
           </div>
@@ -134,7 +134,7 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
         {/* Right Column: Holographic ASCII Portrait Terminal */}
         <div className="md:col-span-5 flex flex-col items-center">
           <div 
-            className="w-full p-3.5 rounded-2xl bg-[#020508] border relative shadow-inner"
+            className="w-full max-w-[280px] p-3 sm:p-3.5 rounded-2xl bg-[#020508] border relative shadow-inner"
             style={{
               borderColor: `${activeColor}80`,
               boxShadow: `0 0 20px ${activeColor}22`
@@ -149,17 +149,19 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
                 <span className="w-1.5 h-1.5 rounded-full bg-current animate-ping" />
                 <span>TERMINAL_01</span>
               </div>
-              <span className="px-1.5 py-0.5 rounded bg-black border border-current font-semibold">
+              <span className="px-1.5 py-0.5 rounded bg-black border border-current font-semibold text-[9px]">
                 COMPLETE
               </span>
             </div>
 
-            {/* Live Synchronous Halftone Dot Matrix */}
+            {/* Live Synchronous Halftone Dot Matrix - Clean pure CRT portrait without color picker or sync badge */}
             <div className="w-full overflow-hidden rounded-xl">
               <AsciiDotMatrix
                 imageSrc={config.avatarUrl || '/suraj-portrait.jpg'}
                 dotColor={activeColor}
-                className="w-full p-2 bg-black border-0 shadow-none"
+                hideHeader={true}
+                hideControls={true}
+                className="w-full p-1 bg-black border-0 shadow-none"
               />
             </div>
 

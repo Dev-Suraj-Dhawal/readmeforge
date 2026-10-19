@@ -37,9 +37,9 @@ export function generateMarkdown(config: ProfileConfig): string {
         <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 13px; color: #00FF66; font-weight: bold;">
           &gt; HELLO, WORLD
         </p>
-        <h1 style="margin: 0 0 8px 0; font-family: monospace; font-size: 26px; color: #00FF66; font-weight: 900; letter-spacing: 1px; border: none;">
-          ${name.toUpperCase()}_
-        </h1>
+        <div style="margin: 0 0 8px 0; font-family: monospace; font-size: 26px; color: #00FF66; font-weight: 900; letter-spacing: 1px; line-height: 1.2;">
+          <b>${name.toUpperCase()}_</b>
+        </div>
         <p style="margin: 0 0 14px 0; font-family: monospace; font-size: 12px; color: #a3e635; font-weight: 600;">
           ${headline}
         </p>

@@ -6,6 +6,8 @@ interface AsciiDotMatrixProps {
   dotColor?: string;
   className?: string;
   interactive?: boolean;
+  hideHeader?: boolean;
+  hideControls?: boolean;
 }
 
 interface MatrixSample {
@@ -92,7 +94,9 @@ export const AsciiDotMatrix: React.FC<AsciiDotMatrixProps> = ({
   imageSrc = '/suraj-portrait.jpg',
   dotColor = '#00FF66',
   className = '',
-  interactive = true
+  interactive = true,
+  hideHeader = false,
+  hideControls = false
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -100,6 +104,14 @@ export const AsciiDotMatrix: React.FC<AsciiDotMatrixProps> = ({
   const [colorScheme, setColorScheme] = useState<string>(dotColor);
   const [mode, setMode] = useState<'halftone-dots' | 'ascii-chars' | 'binary'>('halftone-dots');
   const [status, setStatus] = useState<'hologram' | 'synced'>('hologram');
+
+  // Keep colorScheme reactive to dotColor prop updates
+  useEffect(() => {
+    if (dotColor) {
+      setColorScheme(dotColor);
+      colorSchemeRef.current = dotColor;
+    }
+  }, [dotColor]);
 
   // Real-time animation refs to decouple render loop from React state re-mounts
   const isPlayingRef = useRef(isPlaying);
@@ -358,6 +370,36 @@ export const AsciiDotMatrix: React.FC<AsciiDotMatrixProps> = ({
   const handleMouseLeave = () => {
     mousePos.current.active = false;
   };
+
+  if (hideHeader && hideControls) {
+    return (
+      <div className={`relative w-full overflow-hidden rounded-xl bg-black ${className}`}>
+        <canvas
+          ref={canvasRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className="block mx-auto max-w-full"
+        />
+        {/* Futuristic Corner HUD Markers */}
+        <div
+          className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 pointer-events-none"
+          style={{ borderColor: colorScheme || dotColor }}
+        />
+        <div
+          className="absolute top-2 right-2 w-3.5 h-3.5 border-t-2 border-r-2 pointer-events-none"
+          style={{ borderColor: colorScheme || dotColor }}
+        />
+        <div
+          className="absolute bottom-2 left-2 w-3.5 h-3.5 border-b-2 border-l-2 pointer-events-none"
+          style={{ borderColor: colorScheme || dotColor }}
+        />
+        <div
+          className="absolute bottom-2 right-2 w-3.5 h-3.5 border-b-2 border-r-2 pointer-events-none"
+          style={{ borderColor: colorScheme || dotColor }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`relative flex flex-col items-center p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#0a101d] via-[#060b13] to-[#04070c] border border-emerald-500/30 shadow-2xl overflow-hidden group ${className}`}>
