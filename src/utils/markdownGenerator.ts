@@ -225,7 +225,10 @@ export function generateMarkdown(config: ProfileConfig): string {
         const hideBorder = config.stats.hideBorder ? '&hide_border=true' : '';
         const showIcons = config.stats.showIcons ? '&show_icons=true' : '';
         const showRank = config.stats.showRank ? '&show_rank=true' : '';
-        lines.push(`  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${config.stats.statsTheme}&include_all_commits=true&count_private=true${hideBorder}${showIcons}${showRank}" alt="GitHub Stats" />`);
+        const statsThemeParam = config.stats.statsTheme === 'matrix'
+          ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
+          : `theme=${config.stats.statsTheme || 'radical'}`;
+        lines.push(`  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&${statsThemeParam}&include_all_commits=true&count_private=true${hideBorder}${showIcons}${showRank}" alt="GitHub Stats" />`);
       }
       if (config.stats.showStreak) {
         lines.push(`  <img height="180em" src="https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${config.stats.streakTheme}&hide_border=false" alt="GitHub Streak" />`);
@@ -235,7 +238,10 @@ export function generateMarkdown(config: ProfileConfig): string {
 
     // Top Languages Card
     if (config.stats.showTopLangs) {
-      lines.push(`<p align="center">\n  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=${config.stats.topLangsLayout}&theme=${config.stats.topLangsTheme}&hide_border=false" alt="Top Languages" />\n</p>\n`);
+      const topLangsThemeParam = config.stats.topLangsTheme === 'matrix'
+        ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
+        : `theme=${config.stats.topLangsTheme || 'radical'}`;
+      lines.push(`<p align="center">\n  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs?username=${username}&layout=${config.stats.topLangsLayout}&${topLangsThemeParam}&hide_border=false" alt="Top Languages" />\n</p>\n`);
     }
 
     // Contribution Snake Animation

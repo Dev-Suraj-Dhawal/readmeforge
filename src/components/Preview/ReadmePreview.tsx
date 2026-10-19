@@ -133,6 +133,16 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                     src = avatarUrl || '/suraj-portrait.jpg';
                   }
 
+                  // Normalize github-readme-stats URLs to prevent 500 FUNCTION_INVOCATION_FAILED
+                  if (src.includes('github-readme-stats.vercel.app')) {
+                    if (src.includes('theme=matrix')) {
+                      src = src.replace('theme=matrix', 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66');
+                    }
+                    if (src.includes('/api/top-langs/')) {
+                      src = src.replace('/api/top-langs/', '/api/top-langs');
+                    }
+                  }
+
                   return (
                     <img
                       {...props}
@@ -148,6 +158,16 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                       onError={(e) => {
                         if (isAvatar) {
                           e.currentTarget.src = avatarUrl || '/suraj-portrait.jpg';
+                        } else if (src.includes('github-readme-stats.vercel.app/api/top-langs')) {
+                          const fallbackUrl = `https://github-readme-stats.vercel.app/api/top-langs?username=${username}&layout=compact&title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e`;
+                          if (e.currentTarget.src !== fallbackUrl) {
+                            e.currentTarget.src = fallbackUrl;
+                          }
+                        } else if (src.includes('github-readme-stats.vercel.app/api')) {
+                          const fallbackUrl = `https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e`;
+                          if (e.currentTarget.src !== fallbackUrl) {
+                            e.currentTarget.src = fallbackUrl;
+                          }
                         }
                       }}
                     />
