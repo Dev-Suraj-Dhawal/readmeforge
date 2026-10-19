@@ -277,6 +277,7 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
                           <div className="my-1 flex justify-center w-full">
                             <AsciiDotMatrix 
                               imageSrc={config.avatarUrl || '/suraj-portrait.jpg'} 
+                              dotColor={`#${config.typingColor.replace('#', '') || '00FF66'}`}
                               hideHeader={true}
                               hideControls={true}
                               className="w-full bg-black border-0 shadow-none" 

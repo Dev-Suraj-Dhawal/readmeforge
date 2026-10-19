@@ -10,6 +10,7 @@ interface ReadmePreviewProps {
   markdown: string;
   username: string;
   avatarUrl?: string;
+  dotColor?: string;
   onCopy: () => void;
   onDownload: () => void;
 }
@@ -18,6 +19,7 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
   markdown,
   username,
   avatarUrl,
+  dotColor = '#00FF66',
   onCopy,
   onDownload
 }) => {
@@ -115,6 +117,7 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                       <div className="my-1 flex justify-center w-full">
                         <AsciiDotMatrix 
                           imageSrc={avatarUrl || '/suraj-portrait.jpg'} 
+                          dotColor={dotColor}
                           hideHeader={true}
                           hideControls={true}
                           className="w-full bg-black border-0 shadow-none" 

@@ -11,6 +11,8 @@ export function generateMarkdown(config: ProfileConfig): string {
   const titleTheme = config.titleStyle || 'cyber-badge';
 
   if (config.bannerType === 'cyber-hud') {
+    const activeColor = config.typingColor ? `#${config.typingColor.replace('#', '')}` : '#00FF66';
+
     // 5-6 top Tech Badges as phosphor CLI capsules
     const techPills = (config.techBadges && config.techBadges.length > 0
       ? config.techBadges.slice(0, 6).map((id) => {
@@ -28,35 +30,35 @@ export function generateMarkdown(config: ProfileConfig): string {
 
     lines.push(
 `<div align="center">
-  <table align="center" width="100%" style="background-color: #04080e; border: 2px solid #00FF66; border-radius: 20px; box-shadow: 0 0 25px rgba(0, 255, 102, 0.25); max-width: 840px;">
+  <table align="center" width="100%" style="background-color: #04080e; border: 2px solid ${activeColor}; border-radius: 20px; box-shadow: 0 0 25px ${activeColor}40; max-width: 840px;">
     <tr>
       <td width="60%" style="padding: 24px; vertical-align: top; text-align: left; border: none;">
-        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 11px; color: #00FF66; font-weight: bold; letter-spacing: 1.5px;">
+        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 11px; color: ${activeColor}; font-weight: bold; letter-spacing: 1.5px;">
           ■■■ SYSTEM INTERFACE // ACTIVE
         </p>
-        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 13px; color: #00FF66; font-weight: bold;">
+        <p style="margin: 0 0 6px 0; font-family: monospace; font-size: 13px; color: ${activeColor}; font-weight: bold;">
           &gt; HELLO, WORLD
         </p>
-        <div style="margin: 0 0 8px 0; font-family: monospace; font-size: 26px; color: #00FF66; font-weight: 900; letter-spacing: 1px; line-height: 1.2;">
+        <div style="margin: 0 0 8px 0; font-family: monospace; font-size: 26px; color: ${activeColor}; font-weight: 900; letter-spacing: 1px; line-height: 1.2;">
           <b>${name.toUpperCase()}_</b>
         </div>
-        <p style="margin: 0 0 14px 0; font-family: monospace; font-size: 12px; color: #a3e635; font-weight: 600;">
+        <p style="margin: 0 0 14px 0; font-family: monospace; font-size: 12px; color: ${activeColor}dd; font-weight: 600;">
           ${headline}
         </p>
         <p style="margin: 0 0 14px 0;">
           ${techPills}
         </p>
-        <p style="margin: 0; font-family: monospace; font-size: 11px; color: #00FF66; opacity: 0.85;">
+        <p style="margin: 0; font-family: monospace; font-size: 11px; color: ${activeColor}; opacity: 0.85;">
           | mission -&gt; <b>${mission}</b>
         </p>
       </td>
       <td width="40%" align="center" style="padding: 24px; vertical-align: middle; border: none;">
-        <div style="border: 1px solid #00FF66; border-radius: 14px; padding: 12px; background: #020508; box-shadow: 0 0 15px rgba(0,255,102,0.15); max-width: 220px;">
-          <p style="text-align: right; margin: 0 0 6px 0; font-family: monospace; font-size: 9px; color: #00FF66; font-weight: bold;">
+        <div style="border: 1px solid ${activeColor}; border-radius: 14px; padding: 12px; background: #020508; box-shadow: 0 0 15px ${activeColor}26; max-width: 220px;">
+          <p style="text-align: right; margin: 0 0 6px 0; font-family: monospace; font-size: 9px; color: ${activeColor}; font-weight: bold;">
             COMPLETE
           </p>
-          <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="220" alt="${name} ASCII Portrait" style="border-radius: 12px; border: 2px solid #00FF66; object-fit: cover;" />
-          <p style="text-align: left; margin: 8px 0 0 0; font-family: monospace; font-size: 9px; color: #00FF66; opacity: 0.8;">
+          <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="220" alt="${name} ASCII Portrait" style="border-radius: 12px; border: 2px solid ${activeColor}; object-fit: cover;" />
+          <p style="text-align: left; margin: 8px 0 0 0; font-family: monospace; font-size: 9px; color: ${activeColor}; opacity: 0.8;">
             &gt; portrait.svg loaded // terminal profile
           </p>
         </div>

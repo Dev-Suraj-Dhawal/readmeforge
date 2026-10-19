@@ -310,6 +310,7 @@ export default function App() {
                     markdown={generatedMarkdown}
                     username={config.githubUsername}
                     avatarUrl={config.avatarUrl}
+                    dotColor={`#${config.typingColor.replace('#', '') || '00FF66'}`}
                     onCopy={handleCopyMarkdown}
                     onDownload={handleDownloadMarkdown}
                   />

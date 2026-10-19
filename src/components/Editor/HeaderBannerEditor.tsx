@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ProfileConfig } from '../../types';
-import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon, Scan, Terminal } from 'lucide-react';
+import { Sparkles, Plus, Trash2, Palette, Type, Image as ImageIcon, Scan, Terminal, RotateCcw } from 'lucide-react';
 import { AsciiDotMatrix } from '../AsciiDotMatrix';
 import { CyberHudTerminal } from '../CyberHudTerminal';
 
@@ -241,16 +241,33 @@ export const HeaderBannerEditor: React.FC<HeaderBannerEditorProps> = ({ config, 
                   placeholder="00FF66"
                   className="w-24 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500"
                 />
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {colorPresets.map((c) => (
                     <button
                       key={c.hex}
                       onClick={() => onChange({ typingColor: c.hex })}
                       title={c.label}
-                      className="w-4 h-4 rounded-full border border-white/20 hover:scale-110 cursor-pointer transition"
+                      className={`w-4 h-4 rounded-full border cursor-pointer transition-transform ${
+                        config.typingColor.replace('#', '').toUpperCase() === c.hex.toUpperCase()
+                          ? 'scale-125 border-white ring-2 ring-cyan-400/50'
+                          : 'border-white/20 hover:scale-110'
+                      }`}
                       style={{ backgroundColor: `#${c.hex}` }}
                     />
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => onChange({ typingColor: '00FF66' })}
+                    title="Reset to default Phosphor Green (#00FF66)"
+                    className={`ml-1 px-2 py-0.5 rounded text-[10px] font-mono font-semibold border transition cursor-pointer flex items-center gap-1 ${
+                      config.typingColor.replace('#', '').toUpperCase() === '00FF66'
+                        ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
+                        : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700'
+                    }`}
+                  >
+                    <RotateCcw className="w-2.5 h-2.5" />
+                    <span>Default</span>
+                  </button>
                 </div>
               </div>
             </div>
