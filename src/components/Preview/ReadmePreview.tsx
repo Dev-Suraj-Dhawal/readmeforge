@@ -144,6 +144,33 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                     />
                   );
                 },
+                h1: ({ node, ...props }) => (
+                  <div className="my-5 text-center">
+                    <h1
+                      {...props}
+                      className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent inline-flex items-center justify-center gap-2 border-b-0 pb-0"
+                    />
+                    <div className="h-0.5 w-24 mx-auto mt-2 rounded-full bg-gradient-to-r from-cyan-500 via-emerald-400 to-blue-500 shadow-md shadow-cyan-500/50" />
+                  </div>
+                ),
+                h3: ({ node, ...props }) => (
+                  <div className="my-3 text-center">
+                    <h3
+                      {...props}
+                      className="text-xs sm:text-sm font-semibold text-cyan-200 inline-block px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 shadow-lg shadow-cyan-500/10 tracking-wide font-mono"
+                    />
+                  </div>
+                ),
+                code: ({ node, inline, className, children, ...props }: any) => {
+                  return (
+                    <code
+                      {...props}
+                      className="px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold shadow-md shadow-cyan-500/15 inline-block my-1"
+                    >
+                      {children}
+                    </code>
+                  );
+                },
                 a: ({ node, ...props }) => (
                   <a {...props} className="text-[#58a6ff] hover:underline" target="_blank" rel="noreferrer" />
                 )

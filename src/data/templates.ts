@@ -30,6 +30,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'he/him',
       availableForHire: true,
       themeAesthetic: 'matrix',
+      titleStyle: 'cyber-badge',
       bannerType: 'ascii-dots',
       showAsciiHologram: true,
       asciiDotColor: '#00FF66',
@@ -131,6 +132,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'he/him',
       availableForHire: false,
       themeAesthetic: 'minimal',
+      titleStyle: 'minimal-modern',
       bannerType: 'minimal',
       typingText: [
         'Staff Software Engineer & Distributed Systems Lead',
@@ -209,6 +211,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'she/her',
       availableForHire: true,
       themeAesthetic: 'lofi',
+      titleStyle: 'gradient-glow',
       bannerType: 'wave',
       typingText: [
         'Brewing artisanal code & iced matcha lattes 🍵',
@@ -290,6 +293,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'he/him',
       availableForHire: true,
       themeAesthetic: 'gamified',
+      titleStyle: 'cyber-badge',
       bannerType: 'typing',
       typingText: [
         'Equipped with: TypeScript +10 & Rust Enchantment',
@@ -369,6 +373,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'she/her',
       availableForHire: false,
       themeAesthetic: 'cyberpunk',
+      titleStyle: 'terminal-code',
       bannerType: 'typing',
       typingText: [
         'Autonomous Agent Architectures & LLM Fine-Tuning',
@@ -446,6 +451,7 @@ export const TEMPLATE_PRESETS: TemplatePreset[] = [
       pronouns: 'he/him',
       availableForHire: true,
       themeAesthetic: 'cyberpunk',
+      titleStyle: 'gradient-glow',
       bannerType: 'typing',
       typingText: [
         'Building SaaS products at lightspeed ⚡',

@@ -5,12 +5,28 @@ export function generateMarkdown(config: ProfileConfig): string {
   const lines: string[] = [];
   const username = config.githubUsername.trim() || 'your-username';
 
-  // Header Title with Animated Wave
-  lines.push(`<h1 align="center">\n  <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="30px" height="30px" alt="wave" /> Hi, I'm ${config.displayName || username}\n</h1>`);
+  // Header Title & Headline with Modern Look Themes
+  const name = config.displayName || username;
+  const headline = config.headline;
+  const titleTheme = config.titleStyle || 'cyber-badge';
 
-  // Subtitle / Headline
-  if (config.headline) {
-    lines.push(`<h3 align="center">${config.headline}</h3>`);
+  if (titleTheme === 'terminal-code') {
+    lines.push(
+      `<div align="center">\n  <p align="center">\n    <code><b>$ whoami &gt;</b> ${name}</code><br/>\n    <code><b>$ echo $MISSION &gt;</b> ${headline || 'Building Scalable Software'}</code>\n  </p>\n</div>\n`
+    );
+  } else if (titleTheme === 'gradient-glow') {
+    lines.push(
+      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> <b>${name}</b>\n  </h1>\n  <p align="center"><em>✨ ${headline} ✨</em></p>\n</div>\n`
+    );
+  } else if (titleTheme === 'minimal-modern') {
+    lines.push(
+      `<div align="center">\n  <h1 align="center">${name}</h1>\n  <p align="center"><b>${headline}</b></p>\n</div>\n`
+    );
+  } else {
+    // Default: 'cyber-badge' (Crazy Aesthetic Modern Theme)
+    lines.push(
+      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> Hi, I'm <b>${name}</b>\n  </h1>\n  <p align="center">\n    <code><b>⚡ ${headline} ⚡</b></code>\n  </p>\n</div>\n`
+    );
   }
 
   // Profile Picture in README (if enabled)

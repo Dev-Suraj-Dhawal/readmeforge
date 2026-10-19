@@ -748,6 +748,71 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
           />
         </div>
 
+        {/* Title & Headline Look Theme */}
+        <div className="space-y-2 sm:col-span-2 pt-2 border-t border-slate-800/80">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Title & Headline Theme Style</span>
+            </label>
+            <span className="text-[11px] text-cyan-400 font-mono">Modern GitHub Ready</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {[
+              {
+                id: 'cyber-badge',
+                label: '⚡ Cyber Neon',
+                desc: 'Wave + Neon Capsule',
+                badge: 'Popular'
+              },
+              {
+                id: 'gradient-glow',
+                label: '✨ Gradient Hero',
+                desc: 'Wave + Italic Glow',
+                badge: 'Aesthetic'
+              },
+              {
+                id: 'terminal-code',
+                label: '💻 Hacker CLI',
+                desc: '$ whoami Prompt',
+                badge: 'Dev Favorite'
+              },
+              {
+                id: 'minimal-modern',
+                label: '💎 Modern Clean',
+                desc: 'Centered Minimalist',
+                badge: 'Clean'
+              }
+            ].map((theme) => {
+              const isSelected = (config.titleStyle || 'cyber-badge') === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  onClick={() => onChange({ titleStyle: theme.id as any })}
+                  className={`p-2.5 rounded-xl border text-left flex flex-col justify-between cursor-pointer transition-all ${
+                    isSelected
+                      ? 'bg-cyan-500/15 border-cyan-400 text-white shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400'
+                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 hover:bg-slate-800/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span className="text-xs font-bold">{theme.label}</span>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                  </div>
+                  <span className="text-[10px] text-slate-400 block">{theme.desc}</span>
+                  <span className={`text-[9px] font-mono mt-2 px-1.5 py-0.5 rounded w-fit ${
+                    isSelected ? 'bg-cyan-500/30 text-cyan-200 font-semibold' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    {theme.badge}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Company */}
         <div className="space-y-1.5">
           <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
