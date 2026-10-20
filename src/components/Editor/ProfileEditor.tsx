@@ -1,6 +1,8 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { ProfileConfig } from '../../types';
 import { optimizeAvatarImage } from '../../utils/imageOptimizer';
+import { fetchGitHubProfile } from '../../utils/githubFetcher';
+import confetti from 'canvas-confetti';
 import { 
   User, 
   MapPin, 
@@ -16,7 +18,9 @@ import {
   RefreshCw,
   Palette,
   Shield,
-  Download
+  Download,
+  Zap,
+  Loader2
 } from 'lucide-react';
 
 interface ProfileEditorProps {
@@ -30,6 +34,8 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
   const [uploadMode, setUploadMode] = useState<'upload' | 'link'>('upload');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showAdvancedTuning, setShowAdvancedTuning] = useState(false);
+  const [isFetchingGitHub, setIsFetchingGitHub] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Current values with robust fallbacks
   const currentShape = config.avatarShape || 'circle';
@@ -115,6 +121,47 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
     currentBorderWidth,
     onChange
   ]);
+
+  // One-click GitHub Profile & Repos Auto-Importer
+  const handleAutoFetchGitHub = async () => {
+    const username = config.githubUsername.trim();
+    if (!username) {
+      setFetchStatus({ type: 'error', message: 'Please enter a GitHub username first.' });
+      return;
+    }
+
+    setIsFetchingGitHub(true);
+    setFetchStatus(null);
+    try {
+      const { configUpdates, reposCount } = await fetchGitHubProfile(username);
+      onChange(configUpdates);
+
+      // Auto-tune avatar if image found
+      if (configUpdates.avatarUrl) {
+        triggerImageOptimization(configUpdates.avatarUrl);
+      }
+
+      setFetchStatus({
+        type: 'success',
+        message: `Synced @${configUpdates.githubUsername || username} profile & ${reposCount} featured projects!`
+      });
+
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      } catch (e) {}
+    } catch (err: any) {
+      setFetchStatus({
+        type: 'error',
+        message: err.message || 'Failed to fetch GitHub profile.'
+      });
+    } finally {
+      setIsFetchingGitHub(false);
+    }
+  };
 
   // Handle local file upload
   // Handle local file upload with instant 0ms ObjectURL
@@ -863,24 +910,68 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
 
       {/* Profile Details Form */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* GitHub Username */}
-        <div className="space-y-1.5 sm:col-span-2">
-          <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-            <AtSign className="w-3.5 h-3.5 text-cyan-400" />
-            <span>GitHub Username <span className="text-cyan-400">*</span></span>
+        {/* GitHub Username with Auto-Fetch Action */}
+        <div className="space-y-2 sm:col-span-2">
+          <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <AtSign className="w-3.5 h-3.5 text-cyan-400" />
+              <span>GitHub Username <span className="text-cyan-400">*</span></span>
+            </span>
+            <span className="text-[10px] text-slate-500 font-mono">Press Enter or click Auto-Fetch</span>
           </label>
-          <div className="relative">
-            <span className="absolute left-3 top-2.5 text-xs text-slate-500 font-mono">github.com/</span>
-            <input
-              type="text"
-              value={config.githubUsername}
-              onChange={(e) => onChange({ githubUsername: e.target.value.trim() })}
-              placeholder="Dev-Suraj-Dhawal"
-              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-24 pr-4 py-2 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition-colors"
-            />
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="relative flex-1">
+              <span className="absolute left-3 top-2.5 text-xs text-slate-500 font-mono">github.com/</span>
+              <input
+                type="text"
+                value={config.githubUsername}
+                onChange={(e) => onChange({ githubUsername: e.target.value.trim() })}
+                onKeyDown={(e) => e.key === 'Enter' && handleAutoFetchGitHub()}
+                placeholder="Dev-Suraj-Dhawal"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-24 pr-4 py-2 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAutoFetchGitHub}
+              disabled={isFetchingGitHub || !config.githubUsername.trim()}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 via-indigo-500/20 to-emerald-500/20 hover:from-cyan-500/30 hover:to-emerald-500/30 border border-cyan-500/40 text-cyan-300 font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-cyan-500/10 shrink-0"
+              title="Automatically import profile details, avatar, and top repos from GitHub"
+            >
+              {isFetchingGitHub ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                  <span>Fetching...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Auto-Fetch</span>
+                </>
+              )}
+            </button>
           </div>
-          <span className="text-[11px] text-slate-500">
-            Connects your real repositories, contribution streaks, language chart, and 3D trophies!
+
+          {/* Feedback Toast */}
+          {fetchStatus && (
+            <div className={`text-[11px] font-mono px-3 py-2 rounded-xl border flex items-center justify-between transition-all ${
+              fetchStatus.type === 'success'
+                ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                : 'bg-red-950/40 border-red-500/40 text-red-300'
+            }`}>
+              <span>{fetchStatus.message}</span>
+              <button 
+                type="button" 
+                onClick={() => setFetchStatus(null)} 
+                className="text-xs hover:text-white ml-2 opacity-75 hover:opacity-100 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          <span className="text-[11px] text-slate-500 block">
+            Auto-fills your real avatar, bio, location, company, website, and top starred repositories!
           </span>
         </div>
 

@@ -106,6 +106,32 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportJson = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(config, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute('href', dataStr);
+    dlAnchorElem.setAttribute('download', `readmeforge-${config.githubUsername || 'profile'}-config.json`);
+    dlAnchorElem.click();
+  };
+
+  const handleImportJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const imported = JSON.parse(event.target?.result as string);
+        if (imported && typeof imported === 'object') {
+          setConfig(imported);
+        }
+      } catch (err) {
+        alert('Invalid JSON configuration file.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
   const editorTabs = [
     { id: 'profile', label: 'Identity', icon: User },
     { id: 'header', label: 'Animations', icon: Sparkles },
@@ -126,6 +152,8 @@ export default function App() {
         onDownloadMarkdown={handleDownloadMarkdown}
         onOpenGuide={() => setIsGuideOpen(true)}
         onReset={handleReset}
+        onExportJson={handleExportJson}
+        onImportJson={handleImportJson}
         githubUsername={config.githubUsername}
       />
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Sparkles, 
   Copy, 
@@ -11,7 +11,9 @@ import {
   RotateCcw, 
   HelpCircle,
   Share2,
-  Terminal
+  Terminal,
+  FileJson,
+  Upload
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import confetti from 'canvas-confetti';
@@ -23,6 +25,8 @@ interface NavbarProps {
   onDownloadMarkdown: () => void;
   onOpenGuide: () => void;
   onReset: () => void;
+  onExportJson?: () => void;
+  onImportJson?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   githubUsername: string;
 }
 
@@ -33,9 +37,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadMarkdown,
   onOpenGuide,
   onReset,
+  onExportJson,
+  onImportJson,
   githubUsername
 }) => {
   const [copied, setCopied] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleCopy = () => {
     onCopyMarkdown();
@@ -145,6 +152,39 @@ export const Navbar: React.FC<NavbarProps> = ({
             <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
             <span className="hidden md:inline">Setup Guide</span>
           </button>
+
+          {/* Hidden JSON file input for importing config */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={onImportJson}
+            accept=".json,application/json"
+            className="hidden"
+          />
+
+          {/* Export / Backup JSON Config */}
+          {onExportJson && (
+            <button
+              onClick={onExportJson}
+              title="Backup & Export Profile Configuration (.json)"
+              className="hidden lg:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
+            >
+              <FileJson className="w-3.5 h-3.5 text-purple-400" />
+              <span>Backup</span>
+            </button>
+          )}
+
+          {/* Import JSON Config */}
+          {onImportJson && (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              title="Import Saved Profile Configuration (.json)"
+              className="hidden lg:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
+            >
+              <Upload className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Restore</span>
+            </button>
+          )}
 
           {/* Reset */}
           <button

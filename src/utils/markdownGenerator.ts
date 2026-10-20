@@ -28,6 +28,12 @@ export function generateMarkdown(config: ProfileConfig): string {
       ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
       : config.avatarUrl || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/suraj-portrait.jpg';
 
+    // If custom user, display their actual avatar in the terminal enclosure on GitHub
+    const isSurajDefault = !config.githubUsername || config.githubUsername.toLowerCase().includes('suraj') || config.githubUsername === 'your-username';
+    const terminalPortraitSrc = isSurajDefault
+      ? 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png'
+      : (avatarSrc || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png');
+
     lines.push(
 `<div align="center">
   <table align="center" width="100%" style="background-color: #04080e; border: 2px solid ${activeColor}; border-radius: 20px; box-shadow: 0 0 25px ${activeColor}40; max-width: 840px;">
@@ -57,7 +63,7 @@ export function generateMarkdown(config: ProfileConfig): string {
           <p style="text-align: right; margin: 0 0 6px 0; font-family: monospace; font-size: 9px; color: ${activeColor}; font-weight: bold;">
             COMPLETE
           </p>
-          <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="220" alt="${name} ASCII Portrait" style="border-radius: 12px; border: 2px solid ${activeColor}; object-fit: cover;" />
+          <img src="${terminalPortraitSrc}" width="220" alt="${name} Terminal Portrait" style="border-radius: 12px; border: 2px solid ${activeColor}; object-fit: cover;" />
           <p style="text-align: left; margin: 8px 0 0 0; font-family: monospace; font-size: 9px; color: ${activeColor}; opacity: 0.8;">
             &gt; portrait.svg loaded // terminal profile
           </p>

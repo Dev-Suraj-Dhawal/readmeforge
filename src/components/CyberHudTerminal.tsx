@@ -165,12 +165,32 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
               />
             </div>
 
-            {/* Terminal Frame Footer Caption */}
+            {/* Terminal Frame Footer Caption with Instant ASCII Snapshot */}
             <div 
-              className="w-full text-left text-[10px] font-mono mt-2"
+              className="w-full flex items-center justify-between text-[10px] font-mono mt-2 pt-1 border-t border-slate-900"
               style={{ color: `${activeColor}aa` }}
             >
-              &gt; portrait.svg loaded // terminal profile
+              <span>&gt; portrait.svg loaded</span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const container = (e.currentTarget.closest('.md\\:col-span-5') || e.currentTarget.parentElement?.parentElement);
+                  const canvas = container?.querySelector('canvas') || document.querySelector('canvas');
+                  if (canvas) {
+                    const url = canvas.toDataURL('image/png');
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${config.githubUsername || 'developer'}-ascii-portrait.png`;
+                    a.click();
+                  }
+                }}
+                title="Download this live CRT ASCII portrait as a PNG file"
+                className="px-1.5 py-0.5 rounded text-[9px] border hover:bg-white/10 cursor-pointer transition select-none flex items-center gap-1"
+                style={{ borderColor: `${activeColor}60`, color: activeColor }}
+              >
+                <span>📸 Snapshot</span>
+              </button>
             </div>
           </div>
         </div>
