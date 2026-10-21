@@ -36,6 +36,57 @@ export interface SupportPlatform {
   enabled: boolean;
 }
 
+export type SectionId =
+  | 'header'
+  | 'views'
+  | 'about'
+  | 'tech'
+  | 'stats'
+  | 'widgets'
+  | 'projects'
+  | 'socials'
+  | 'support'
+  | 'quote';
+
+export interface SectionItem {
+  id: SectionId;
+  label: string;
+  enabled: boolean;
+}
+
+export const DEFAULT_SECTION_ORDER: SectionItem[] = [
+  { id: 'header', label: 'Header & Banner', enabled: true },
+  { id: 'views', label: 'Profile Views & Hire Status', enabled: true },
+  { id: 'about', label: 'About Me Narrative', enabled: true },
+  { id: 'tech', label: 'Tech Stack Badges', enabled: true },
+  { id: 'stats', label: 'GitHub Analytics & Streak', enabled: true },
+  { id: 'widgets', label: 'Live Dev Widgets (LeetCode / Quotes / Jokes)', enabled: true },
+  { id: 'projects', label: 'Featured Projects', enabled: true },
+  { id: 'socials', label: 'Connect & Socials', enabled: true },
+  { id: 'support', label: 'Support & Sponsors', enabled: true },
+  { id: 'quote', label: 'Inspiring Quote', enabled: true },
+];
+
+export interface LiveWidgetsConfig {
+  showLeetCode: boolean;
+  leetcodeUsername: string;
+  leetcodeTheme: string;
+  showDevQuote: boolean;
+  quoteTheme: string;
+  showDevJoke: boolean;
+  jokeTheme: string;
+}
+
+export const DEFAULT_LIVE_WIDGETS: LiveWidgetsConfig = {
+  showLeetCode: false,
+  leetcodeUsername: '',
+  leetcodeTheme: 'nord',
+  showDevQuote: false,
+  quoteTheme: 'radical',
+  showDevJoke: false,
+  jokeTheme: 'dark',
+};
+
 export interface StatsConfig {
   showStatsCard: boolean;
   statsTheme: string;
@@ -109,6 +160,9 @@ export interface ProfileConfig {
   stats: StatsConfig;
   projects: ProjectItem[];
   support: SupportPlatform[];
+  
+  sectionOrder?: SectionItem[];
+  widgets?: LiveWidgetsConfig;
   
   customMarkdown: string;
 }

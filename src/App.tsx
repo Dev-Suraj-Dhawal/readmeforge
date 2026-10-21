@@ -12,6 +12,8 @@ import { StatsCardsEditor } from './components/Editor/StatsCardsEditor';
 import { SocialsEditor } from './components/Editor/SocialsEditor';
 import { ProjectsEditor } from './components/Editor/ProjectsEditor';
 import { RawMarkdownEditor } from './components/Editor/RawMarkdownEditor';
+import { SectionOrderEditor } from './components/Editor/SectionOrderEditor';
+import { LiveWidgetsEditor } from './components/Editor/LiveWidgetsEditor';
 import { GitHubSimulator } from './components/Preview/GitHubSimulator';
 import { ReadmePreview } from './components/Preview/ReadmePreview';
 import { GitHubGuideModal } from './components/Modals/GitHubGuideModal';
@@ -28,7 +30,8 @@ import {
   PanelLeftClose, 
   PanelRightClose,
   Zap,
-  Layers
+  Layers,
+  ArrowUpDown
 } from 'lucide-react';
 
 const STORAGE_KEY = 'readme_forge_config_v5_avatar_studio';
@@ -46,7 +49,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<'editor' | 'templates' | 'simulator' | 'raw'>('editor');
-  const [editorSubTab, setEditorSubTab] = useState<'profile' | 'header' | 'badges' | 'stats' | 'bio' | 'socials' | 'projects'>('profile');
+  const [editorSubTab, setEditorSubTab] = useState<'profile' | 'layout' | 'header' | 'badges' | 'stats' | 'widgets' | 'bio' | 'socials' | 'projects'>('profile');
   const [activeTemplateId, setActiveTemplateId] = useState<string>(TEMPLATE_PRESETS[0].id);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [mobileView, setMobileView] = useState<'builder' | 'preview'>('builder');
@@ -134,9 +137,11 @@ export default function App() {
 
   const editorTabs = [
     { id: 'profile', label: 'Identity', icon: User },
+    { id: 'layout', label: 'Layout', icon: ArrowUpDown },
     { id: 'header', label: 'Animations', icon: Sparkles },
     { id: 'badges', label: 'Tech Stack', icon: Cpu },
     { id: 'stats', label: 'Live Stats', icon: BarChart3 },
+    { id: 'widgets', label: 'Live Widgets', icon: Layers },
     { id: 'bio', label: 'Bio Bullets', icon: FileText },
     { id: 'projects', label: 'Projects', icon: FolderGit2 },
     { id: 'socials', label: 'Connect', icon: Share2 }
@@ -296,6 +301,12 @@ export default function App() {
                   {editorSubTab === 'profile' && (
                     <ProfileEditor config={config} onChange={updateConfig} />
                   )}
+                  {editorSubTab === 'layout' && (
+                    <SectionOrderEditor
+                      sectionOrder={config.sectionOrder}
+                      onChange={(sectionOrder) => updateConfig({ sectionOrder })}
+                    />
+                  )}
                   {editorSubTab === 'header' && (
                     <HeaderBannerEditor config={config} onChange={updateConfig} />
                   )}
@@ -307,6 +318,13 @@ export default function App() {
                       stats={config.stats}
                       onChange={(st) => updateConfig({ stats: { ...config.stats, ...st } })}
                       username={config.githubUsername}
+                    />
+                  )}
+                  {editorSubTab === 'widgets' && (
+                    <LiveWidgetsEditor
+                      widgets={config.widgets}
+                      onChange={(widgets) => updateConfig({ widgets })}
+                      githubUsername={config.githubUsername}
                     />
                   )}
                   {editorSubTab === 'bio' && (

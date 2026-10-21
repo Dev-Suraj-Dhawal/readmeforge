@@ -1,13 +1,13 @@
-import { ProfileConfig } from '../types';
+import { ProfileConfig, DEFAULT_SECTION_ORDER } from '../types';
 import { TECH_BADGES, getBadgeUrl } from '../data/techStackBadges';
 
-export function generateMarkdown(config: ProfileConfig): string {
-  const lines: string[] = [];
-  const username = config.githubUsername.trim() || 'your-username';
-
-  // Header Title & Headline with Modern Look Themes
-  const name = config.displayName || username;
-  const headline = config.headline;
+function renderHeaderSection(
+  config: ProfileConfig,
+  username: string,
+  name: string,
+  headline: string
+): string {
+  const parts: string[] = [];
   const titleTheme = config.titleStyle || 'cyber-badge';
 
   if (config.bannerType === 'cyber-hud') {
@@ -34,7 +34,7 @@ export function generateMarkdown(config: ProfileConfig): string {
       ? 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png'
       : (avatarSrc || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png');
 
-    lines.push(
+    parts.push(
 `<div align="center">
   <table align="center" width="100%" style="background-color: #04080e; border: 2px solid ${activeColor}; border-radius: 20px; box-shadow: 0 0 25px ${activeColor}40; max-width: 840px;">
     <tr>
@@ -71,24 +71,24 @@ export function generateMarkdown(config: ProfileConfig): string {
       </td>
     </tr>
   </table>
-</div>\n`
+</div>`
     );
   } else if (titleTheme === 'terminal-code') {
-    lines.push(
-      `<div align="center">\n  <p align="center">\n    <code><b>$ whoami &gt;</b> ${name}</code><br/>\n    <code><b>$ echo $MISSION &gt;</b> ${headline || 'Building Scalable Software'}</code>\n  </p>\n</div>\n`
+    parts.push(
+      `<div align="center">\n  <p align="center">\n    <code><b>$ whoami &gt;</b> ${name}</code><br/>\n    <code><b>$ echo $MISSION &gt;</b> ${headline || 'Building Scalable Software'}</code>\n  </p>\n</div>`
     );
   } else if (titleTheme === 'gradient-glow') {
-    lines.push(
-      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> <b>${name}</b>\n  </h1>\n  <p align="center"><em>✨ ${headline} ✨</em></p>\n</div>\n`
+    parts.push(
+      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> <b>${name}</b>\n  </h1>\n  <p align="center"><em>✨ ${headline} ✨</em></p>\n</div>`
     );
   } else if (titleTheme === 'minimal-modern') {
-    lines.push(
-      `<div align="center">\n  <h1 align="center">${name}</h1>\n  <p align="center"><b>${headline}</b></p>\n</div>\n`
+    parts.push(
+      `<div align="center">\n  <h1 align="center">${name}</h1>\n  <p align="center"><b>${headline}</b></p>\n</div>`
     );
   } else {
     // Default: 'cyber-badge' (Crazy Aesthetic Modern Theme)
-    lines.push(
-      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> Hi, I'm <b>${name}</b>\n  </h1>\n  <p align="center">\n    <code><b>⚡ ${headline} ⚡</b></code>\n  </p>\n</div>\n`
+    parts.push(
+      `<div align="center">\n  <h1 align="center">\n    <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="32px" height="32px" alt="wave" /> Hi, I'm <b>${name}</b>\n  </h1>\n  <p align="center">\n    <code><b>⚡ ${headline} ⚡</b></code>\n  </p>\n</div>`
     );
   }
 
@@ -138,10 +138,34 @@ export function generateMarkdown(config: ProfileConfig): string {
     const borderStyle = borderWidth > 0 ? `border: ${borderWidth}px solid ${borderColor};` : '';
     const glowStyle = borderWidth > 0 ? `box-shadow: 0 0 25px ${borderColor}66;` : '';
 
-    lines.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} ${glowStyle} ${filterStyle} object-fit: cover;" />\n</p>\n`);
+    parts.push(`<p align="center">\n  <img src="${avatarSrc}" width="${width}" height="${width}" alt="${config.displayName || username}" style="${shapeStyle} ${borderStyle} ${glowStyle} ${filterStyle} object-fit: cover;" />\n</p>`);
   }
 
-  // Profile Views Badge & Status
+  // Holographic ASCII Dot Matrix Portrait Banner
+  if (config.bannerType === 'ascii-dots' || config.showAsciiHologram) {
+    parts.push(`<p align="center">\n  <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="340" alt="Holographic ASCII Dot Matrix" />\n</p>`);
+  }
+
+  // Animated Typing Header Banner
+  if ((config.bannerType === 'typing' || config.bannerType === 'ascii-dots') && config.typingText.length > 0) {
+    const encodedLines = config.typingText.map((t) => encodeURIComponent(t)).join(';');
+    const font = encodeURIComponent(config.typingFont || 'Fira Code');
+    const color = config.typingColor.replace('#', '') || '00FF66';
+    const typingUrl = `https://readme-typing-svg.demolab.com?font=${font}&size=22&pause=1000&color=${color}&center=true&vCenter=true&width=600&height=70&lines=${encodedLines}`;
+
+    parts.push(`<p align="center">\n  <a href="https://github.com/${username}">\n    <img src="${typingUrl}" alt="Typing SVG" />\n  </a>\n</p>`);
+  } else if (config.bannerType === 'wave') {
+    parts.push(`<p align="center">\n  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=10,24,38&height=180&section=header&text=${encodeURIComponent(config.displayName || username)}&fontSize=42&fontColor=ffffff&animation=fadeIn" width="100%" />\n</p>`);
+  } else if (config.bannerType === 'retro') {
+    parts.push(`<p align="center">\n  <img src="https://capsule-render.vercel.app/api?type=rect&color=timeGradient&text=${encodeURIComponent(config.displayName || username)}&fontSize=40&fontColor=ffffff" width="100%" />\n</p>`);
+  } else if (config.bannerType === 'custom' && config.customBannerUrl) {
+    parts.push(`<p align="center">\n  <img src="${config.customBannerUrl}" alt="Banner" width="100%" />\n</p>`);
+  }
+
+  return parts.join('\n\n');
+}
+
+function renderViewsSection(config: ProfileConfig, username: string): string {
   const statusBadges: string[] = [];
   if (config.stats.showProfileViews) {
     statusBadges.push(
@@ -154,37 +178,16 @@ export function generateMarkdown(config: ProfileConfig): string {
     );
   }
 
-  if (statusBadges.length > 0) {
-    lines.push(`<p align="center">\n  ${statusBadges.join('\n  ')}\n</p>\n`);
-  }
+  if (statusBadges.length === 0) return '';
+  return `<p align="center">\n  ${statusBadges.join('\n  ')}\n</p>`;
+}
 
-  // Holographic ASCII Dot Matrix Portrait Banner
-  if (config.bannerType === 'ascii-dots' || config.showAsciiHologram) {
-    lines.push(`<p align="center">\n  <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="340" alt="Holographic ASCII Dot Matrix" />\n</p>\n`);
-  }
+function renderQuoteSection(config: ProfileConfig): string {
+  if (!config.quote) return '';
+  return `> *"${config.quote}"*  \n> — **${config.quoteAuthor || 'Unknown'}**`;
+}
 
-  // Animated Typing Header Banner
-  if ((config.bannerType === 'typing' || config.bannerType === 'ascii-dots') && config.typingText.length > 0) {
-    const encodedLines = config.typingText.map((t) => encodeURIComponent(t)).join(';');
-    const font = encodeURIComponent(config.typingFont || 'Fira Code');
-    const color = config.typingColor.replace('#', '') || '00FF66';
-    const typingUrl = `https://readme-typing-svg.demolab.com?font=${font}&size=22&pause=1000&color=${color}&center=true&vCenter=true&width=600&height=70&lines=${encodedLines}`;
-
-    lines.push(`<p align="center">\n  <a href="https://github.com/${username}">\n    <img src="${typingUrl}" alt="Typing SVG" />\n  </a>\n</p>\n`);
-  } else if (config.bannerType === 'wave') {
-    lines.push(`<p align="center">\n  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=10,24,38&height=180&section=header&text=${encodeURIComponent(config.displayName || username)}&fontSize=42&fontColor=ffffff&animation=fadeIn" width="100%" />\n</p>\n`);
-  } else if (config.bannerType === 'retro') {
-    lines.push(`<p align="center">\n  <img src="https://capsule-render.vercel.app/api?type=rect&color=timeGradient&text=${encodeURIComponent(config.displayName || username)}&fontSize=40&fontColor=ffffff" width="100%" />\n</p>\n`);
-  } else if (config.bannerType === 'custom' && config.customBannerUrl) {
-    lines.push(`<p align="center">\n  <img src="${config.customBannerUrl}" alt="Banner" width="100%" />\n</p>\n`);
-  }
-
-  // Quote
-  if (config.quote) {
-    lines.push(`> *"${config.quote}"*  \n> — **${config.quoteAuthor || 'Unknown'}**\n`);
-  }
-
-  // About Me Section
+function renderAboutSection(config: ProfileConfig): string {
   const aboutItems: string[] = [];
   if (config.workingOn) aboutItems.push(`- 🔭 **I'm currently working on**: ${config.workingOn}`);
   if (config.learning) aboutItems.push(`- 🌱 **I'm currently learning**: ${config.learning}`);
@@ -193,24 +196,22 @@ export function generateMarkdown(config: ProfileConfig): string {
   if (config.reachMe) aboutItems.push(`- 📫 **How to reach me**: ${config.reachMe}`);
   if (config.funFact) aboutItems.push(`- ⚡ **Fun fact**: ${config.funFact}`);
 
-  if (aboutItems.length > 0) {
-    lines.push(`## 💫 About Me\n`);
-    lines.push(aboutItems.join('\n') + '\n');
-  }
+  if (aboutItems.length === 0) return '';
+  return `## 💫 About Me\n\n${aboutItems.join('\n')}`;
+}
 
-  // Tech Stack Badges
-  if (config.techBadges && config.techBadges.length > 0) {
-    lines.push(`## 🛠️ Tech Stack & Arsenal\n`);
-    lines.push(`<p align="left">`);
-    const badgeMarkdownItems = config.techBadges
-      .map((id) => TECH_BADGES.find((b) => b.id === id))
-      .filter((b): b is NonNullable<typeof b> => Boolean(b))
-      .map((b) => `  <img src="${getBadgeUrl(b, config.badgeStyle)}" alt="${b.name}" />`);
-    lines.push(badgeMarkdownItems.join('\n'));
-    lines.push(`</p>\n`);
-  }
+function renderTechSection(config: ProfileConfig): string {
+  if (!config.techBadges || config.techBadges.length === 0) return '';
 
-  // GitHub Stats & Analytics
+  const badgeMarkdownItems = config.techBadges
+    .map((id) => TECH_BADGES.find((b) => b.id === id))
+    .filter((b): b is NonNullable<typeof b> => Boolean(b))
+    .map((b) => `  <img src="${getBadgeUrl(b, config.badgeStyle)}" alt="${b.name}" />`);
+
+  return `## 🛠️ Tech Stack & Arsenal\n\n<p align="left">\n${badgeMarkdownItems.join('\n')}\n</p>`;
+}
+
+function renderStatsSection(config: ProfileConfig, username: string): string {
   const hasStats =
     config.stats.showStatsCard ||
     config.stats.showStreak ||
@@ -218,106 +219,207 @@ export function generateMarkdown(config: ProfileConfig): string {
     config.stats.showTrophies ||
     config.stats.showActivitySnake;
 
-  if (hasStats) {
-    lines.push(`## 📊 GitHub Analytics & Milestones\n`);
+  if (!hasStats) return '';
 
-    // Trophies
-    if (config.stats.showTrophies) {
-      lines.push(`<p align="center">\n  <img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${config.stats.trophiesTheme || 'radical'}&no-frame=false&no-bg=true&margin_w=4" alt="GitHub Trophies" />\n</p>\n`);
-    }
+  const statBlocks: string[] = [`## 📊 GitHub Analytics & Milestones`];
 
-    // Stats Card & Streak Card side-by-side
-    if (config.stats.showStatsCard || config.stats.showStreak) {
-      lines.push(`<p align="center">`);
-      if (config.stats.showStatsCard) {
-        const hideBorder = config.stats.hideBorder ? '&hide_border=true' : '';
-        const showIcons = config.stats.showIcons ? '&show_icons=true' : '';
-        const showRank = config.stats.showRank ? '&show_rank=true' : '';
-        const statsThemeParam = config.stats.statsTheme === 'matrix'
-          ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
-          : `theme=${config.stats.statsTheme || 'radical'}`;
-        lines.push(`  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&${statsThemeParam}&include_all_commits=true&count_private=true${hideBorder}${showIcons}${showRank}" alt="GitHub Stats" />`);
-      }
-      if (config.stats.showStreak) {
-        lines.push(`  <img height="180em" src="https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${config.stats.streakTheme}&hide_border=false" alt="GitHub Streak" />`);
-      }
-      lines.push(`</p>\n`);
-    }
+  // Trophies
+  if (config.stats.showTrophies) {
+    statBlocks.push(`<p align="center">\n  <img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${config.stats.trophiesTheme || 'radical'}&no-frame=false&no-bg=true&margin_w=4" alt="GitHub Trophies" />\n</p>`);
+  }
 
-    // Top Languages Card
-    if (config.stats.showTopLangs) {
-      const topLangsThemeParam = config.stats.topLangsTheme === 'matrix'
+  // Stats Card & Streak Card side-by-side
+  if (config.stats.showStatsCard || config.stats.showStreak) {
+    const cards: string[] = [];
+    if (config.stats.showStatsCard) {
+      const hideBorder = config.stats.hideBorder ? '&hide_border=true' : '';
+      const showIcons = config.stats.showIcons ? '&show_icons=true' : '';
+      const showRank = config.stats.showRank ? '&show_rank=true' : '';
+      const statsThemeParam = config.stats.statsTheme === 'matrix'
         ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
-        : `theme=${config.stats.topLangsTheme || 'radical'}`;
-      lines.push(`<p align="center">\n  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs?username=${username}&layout=${config.stats.topLangsLayout}&${topLangsThemeParam}&hide_border=false" alt="Top Languages" />\n</p>\n`);
+        : `theme=${config.stats.statsTheme || 'radical'}`;
+      cards.push(`  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&${statsThemeParam}&include_all_commits=true&count_private=true${hideBorder}${showIcons}${showRank}" alt="GitHub Stats" />`);
     }
-
-    // Contribution Snake Animation
-    if (config.stats.showActivitySnake) {
-      lines.push(`### 🐍 Contribution Activity Matrix\n`);
-      lines.push(`<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake-dark.svg">\n  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n  <img alt="github contribution snake" src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n</picture>\n`);
+    if (config.stats.showStreak) {
+      cards.push(`  <img height="180em" src="https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${config.stats.streakTheme}&hide_border=false" alt="GitHub Streak" />`);
     }
+    statBlocks.push(`<p align="center">\n${cards.join('\n')}\n</p>`);
   }
 
-  // Featured Projects
-  if (config.projects && config.projects.length > 0) {
-    lines.push(`## 🚀 Featured Projects\n`);
-    lines.push(`| Project | Description | Tech Stack | Links |`);
-    lines.push(`| :--- | :--- | :--- | :--- |`);
-    config.projects.forEach((proj) => {
-      const techList = proj.tech.map((t) => `\`${t}\``).join(' ');
-      const links = [
-        proj.repoUrl ? `[📦 Source](${proj.repoUrl})` : '',
-        proj.liveUrl ? `[🌐 Demo](${proj.liveUrl})` : ''
-      ].filter(Boolean).join(' • ');
-
-      lines.push(`| **${proj.title}** | ${proj.description} | ${techList} | ${links} |`);
-    });
-    lines.push('');
+  // Top Languages Card
+  if (config.stats.showTopLangs) {
+    const topLangsThemeParam = config.stats.topLangsTheme === 'matrix'
+      ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
+      : `theme=${config.stats.topLangsTheme || 'radical'}`;
+    statBlocks.push(`<p align="center">\n  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs?username=${username}&layout=${config.stats.topLangsLayout}&${topLangsThemeParam}&hide_border=false" alt="Top Languages" />\n</p>`);
   }
 
-  // Connect & Socials
-  const enabledSocials = config.socials.filter((s) => s.enabled && s.url);
-  if (enabledSocials.length > 0) {
-    lines.push(`## 🌐 Connect With Me\n`);
-    lines.push(`<p align="left">`);
-    enabledSocials.forEach((soc) => {
-      let logo = soc.platform.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (soc.platform.includes('Twitter') || soc.platform.includes('X')) logo = 'x';
-      if (soc.platform.includes('LinkedIn')) logo = 'linkedin';
-      if (soc.platform.includes('YouTube')) logo = 'youtube';
-      if (soc.platform.includes('Discord')) logo = 'discord';
-
-      lines.push(`  <a href="${soc.url}" target="_blank">\n    <img src="https://img.shields.io/badge/${encodeURIComponent(soc.platform)}-000000?style=${config.badgeStyle}&logo=${logo}&logoColor=white" alt="${soc.platform}" />\n  </a>`);
-    });
-    lines.push(`</p>\n`);
+  // Contribution Snake Animation
+  if (config.stats.showActivitySnake) {
+    statBlocks.push(`### 🐍 Contribution Activity Matrix\n\n<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake-dark.svg">\n  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n  <img alt="github contribution snake" src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n</picture>`);
   }
 
-  // Support & Sponsors
-  const enabledSupport = config.support.filter((s) => s.enabled && s.username);
-  if (enabledSupport.length > 0) {
-    lines.push(`## ☕ Support My Work\n`);
-    lines.push(`<p align="left">`);
-    enabledSupport.forEach((sup) => {
-      if (sup.platform === 'buymeacoffee') {
-        lines.push(`  <a href="https://www.buymeacoffee.com/${sup.username}" target="_blank">\n    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40" />\n  </a>`);
-      } else if (sup.platform === 'kofi') {
-        lines.push(`  <a href="https://ko-fi.com/${sup.username}" target="_blank">\n    <img src="https://img.shields.io/badge/Ko--fi-F16061?style=${config.badgeStyle}&logo=ko-fi&logoColor=white" alt="Ko-fi" />\n  </a>`);
-      } else if (sup.platform === 'github') {
-        lines.push(`  <a href="https://github.com/sponsors/${sup.username}" target="_blank">\n    <img src="https://img.shields.io/badge/Sponsor-EA4AAA?style=${config.badgeStyle}&logo=githubsponsors&logoColor=white" alt="GitHub Sponsors" />\n  </a>`);
-      }
-    });
-    lines.push(`</p>\n`);
+  return statBlocks.join('\n\n');
+}
+
+function renderWidgetsSection(config: ProfileConfig, username: string): string {
+  const w = config.widgets;
+  if (!w) return '';
+
+  const widgetCards: string[] = [];
+  const leetUser = (w.leetcodeUsername || config.githubUsername || username).trim();
+
+  if (w.showLeetCode && leetUser) {
+    const theme = encodeURIComponent(w.leetcodeTheme || 'nord');
+    widgetCards.push(
+      `<p align="center">\n  <a href="https://leetcode.com/${encodeURIComponent(leetUser)}" target="_blank">\n    <img src="https://leetcard.jacoblin.cool/${encodeURIComponent(leetUser)}?theme=${theme}&font=Fira+Code&ext=activity" alt="LeetCode Stats" />\n  </a>\n</p>`
+    );
   }
 
-  // Custom Markdown Block (if user wrote custom additions)
-  if (config.customMarkdown && config.customMarkdown.trim()) {
-    lines.push(`\n${config.customMarkdown.trim()}\n`);
+  if (w.showDevQuote) {
+    const theme = encodeURIComponent(w.quoteTheme || 'radical');
+    widgetCards.push(
+      `<p align="center">\n  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=${theme}" alt="Daily Dev Quote" />\n</p>`
+    );
   }
 
-  // Sleek Footer
-  lines.push(`---\n<p align="center">\n  <i>⚡ Crafted with <a href="https://github.com">ReadmeForge</a> — The Next-Gen Aesthetic GitHub Profile Architect</i>\n</p>`);
+  if (w.showDevJoke) {
+    const theme = encodeURIComponent(w.jokeTheme || 'dark');
+    widgetCards.push(
+      `<p align="center">\n  <img src="https://readme-jokes.vercel.app/api?theme=${theme}" alt="Dev Joke" />\n</p>`
+    );
+  }
+
+  if (widgetCards.length === 0) return '';
+
+  return `## ⚡ Dynamic Developer Live Widgets\n\n${widgetCards.join('\n\n')}`;
+}
+
+function renderProjectsSection(config: ProfileConfig): string {
+  if (!config.projects || config.projects.length === 0) return '';
+
+  const lines: string[] = [
+    `## 🚀 Featured Projects\n`,
+    `| Project | Description | Tech Stack | Links |`,
+    `| :--- | :--- | :--- | :--- |`
+  ];
+
+  config.projects.forEach((proj) => {
+    const techList = proj.tech.map((t) => `\`${t}\``).join(' ');
+    const links = [
+      proj.repoUrl ? `[📦 Source](${proj.repoUrl})` : '',
+      proj.liveUrl ? `[🌐 Demo](${proj.liveUrl})` : ''
+    ].filter(Boolean).join(' • ');
+
+    lines.push(`| **${proj.title}** | ${proj.description} | ${techList} | ${links} |`);
+  });
 
   return lines.join('\n');
 }
 
+function renderSocialsSection(config: ProfileConfig): string {
+  const enabledSocials = config.socials.filter((s) => s.enabled && s.url);
+  if (enabledSocials.length === 0) return '';
+
+  const badges: string[] = [];
+  enabledSocials.forEach((soc) => {
+    let logo = soc.platform.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (soc.platform.includes('Twitter') || soc.platform.includes('X')) logo = 'x';
+    if (soc.platform.includes('LinkedIn')) logo = 'linkedin';
+    if (soc.platform.includes('YouTube')) logo = 'youtube';
+    if (soc.platform.includes('Discord')) logo = 'discord';
+
+    badges.push(`  <a href="${soc.url}" target="_blank">\n    <img src="https://img.shields.io/badge/${encodeURIComponent(soc.platform)}-000000?style=${config.badgeStyle}&logo=${logo}&logoColor=white" alt="${soc.platform}" />\n  </a>`);
+  });
+
+  return `## 🌐 Connect With Me\n\n<p align="left">\n${badges.join('\n')}\n</p>`;
+}
+
+function renderSupportSection(config: ProfileConfig): string {
+  const enabledSupport = config.support.filter((s) => s.enabled && s.username);
+  if (enabledSupport.length === 0) return '';
+
+  const buttons: string[] = [];
+  enabledSupport.forEach((sup) => {
+    if (sup.platform === 'buymeacoffee') {
+      buttons.push(`  <a href="https://www.buymeacoffee.com/${sup.username}" target="_blank">\n    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40" />\n  </a>`);
+    } else if (sup.platform === 'kofi') {
+      buttons.push(`  <a href="https://ko-fi.com/${sup.username}" target="_blank">\n    <img src="https://img.shields.io/badge/Ko--fi-F16061?style=${config.badgeStyle}&logo=ko-fi&logoColor=white" alt="Ko-fi" />\n  </a>`);
+    } else if (sup.platform === 'github') {
+      buttons.push(`  <a href="https://github.com/sponsors/${sup.username}" target="_blank">\n    <img src="https://img.shields.io/badge/Sponsor-EA4AAA?style=${config.badgeStyle}&logo=githubsponsors&logoColor=white" alt="GitHub Sponsors" />\n  </a>`);
+    }
+  });
+
+  return `## ☕ Support My Work\n\n<p align="left">\n${buttons.join('\n')}\n</p>`;
+}
+
+export function generateMarkdown(config: ProfileConfig): string {
+  const username = config.githubUsername.trim() || 'your-username';
+  const name = config.displayName || username;
+  const headline = config.headline;
+
+  // Resolve section order with fallback to DEFAULT_SECTION_ORDER
+  const rawOrder = config.sectionOrder && config.sectionOrder.length > 0
+    ? config.sectionOrder
+    : DEFAULT_SECTION_ORDER;
+
+  const existingIds = new Set(rawOrder.map((s) => s.id));
+  const sectionOrder = [
+    ...rawOrder,
+    ...DEFAULT_SECTION_ORDER.filter((s) => !existingIds.has(s.id))
+  ];
+
+  const sections: string[] = [];
+
+  for (const section of sectionOrder) {
+    if (!section.enabled) continue;
+
+    let content = '';
+    switch (section.id) {
+      case 'header':
+        content = renderHeaderSection(config, username, name, headline);
+        break;
+      case 'views':
+        content = renderViewsSection(config, username);
+        break;
+      case 'quote':
+        content = renderQuoteSection(config);
+        break;
+      case 'about':
+        content = renderAboutSection(config);
+        break;
+      case 'tech':
+        content = renderTechSection(config);
+        break;
+      case 'stats':
+        content = renderStatsSection(config, username);
+        break;
+      case 'widgets':
+        content = renderWidgetsSection(config, username);
+        break;
+      case 'projects':
+        content = renderProjectsSection(config);
+        break;
+      case 'socials':
+        content = renderSocialsSection(config);
+        break;
+      case 'support':
+        content = renderSupportSection(config);
+        break;
+    }
+
+    if (content && content.trim()) {
+      sections.push(content.trim());
+    }
+  }
+
+  // Custom Markdown Block (if user wrote custom additions)
+  if (config.customMarkdown && config.customMarkdown.trim()) {
+    sections.push(config.customMarkdown.trim());
+  }
+
+  // Sleek Footer
+  sections.push(`---\n<p align="center">\n  <i>⚡ Crafted with <a href="https://github.com">ReadmeForge</a> — The Next-Gen Aesthetic GitHub Profile Architect</i>\n</p>`);
+
+  return sections.join('\n\n');
+}
