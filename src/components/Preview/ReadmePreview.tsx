@@ -113,10 +113,12 @@ export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
                 img: ({ node, ...props }) => {
                   let src = props.src || '';
                   if (src.includes('ascii-portrait.png')) {
+                    const isSuraj = !username || username.toLowerCase().includes('suraj') || username === 'your-username';
+                    const effectiveAvatar = avatarUrl || (!isSuraj && username ? `https://github.com/${encodeURIComponent(username.trim())}.png` : '/suraj-portrait.jpg');
                     return (
                       <div className="my-1 flex justify-center w-full">
                         <AsciiDotMatrix 
-                          imageSrc={avatarUrl || '/suraj-portrait.jpg'} 
+                          imageSrc={effectiveAvatar} 
                           dotColor={dotColor}
                           hideHeader={true}
                           hideControls={true}

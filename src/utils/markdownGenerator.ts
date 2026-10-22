@@ -1,6 +1,41 @@
 import { ProfileConfig, DEFAULT_SECTION_ORDER } from '../types';
 import { TECH_BADGES, getBadgeUrl } from '../data/techStackBadges';
 
+function getDynamicAvatarUrl(config: ProfileConfig, username: string): string {
+  const isSuraj = !username || username.toLowerCase().includes('suraj') || username === 'your-username';
+
+  let url = config.avatarUrl;
+
+  // Handle local base64 cropped data URLs (GitHub Camo blocks inline data: URIs)
+  if (url && url.startsWith('data:')) {
+    if (config.avatarRawSource && !config.avatarRawSource.startsWith('data:') && !config.avatarRawSource.startsWith('/')) {
+      return config.avatarRawSource;
+    }
+    if (!isSuraj) {
+      return `https://github.com/${encodeURIComponent(username)}.png`;
+    }
+    url = '/suraj-portrait.jpg';
+  }
+
+  // If user changed their GitHub username away from Suraj but avatarUrl is still default /suraj-portrait.jpg
+  if (!isSuraj && (!url || url === '/suraj-portrait.jpg' || url.includes('suraj-portrait.jpg'))) {
+    return `https://github.com/${encodeURIComponent(username)}.png`;
+  }
+
+  // If it's a relative path in public/
+  if (url && url.startsWith('/')) {
+    return `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${url}`;
+  }
+
+  if (!url) {
+    return isSuraj
+      ? 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/suraj-portrait.jpg'
+      : `https://github.com/${encodeURIComponent(username)}.png`;
+  }
+
+  return url;
+}
+
 function renderHeaderSection(
   config: ProfileConfig,
   username: string,
@@ -9,6 +44,8 @@ function renderHeaderSection(
 ): string {
   const parts: string[] = [];
   const titleTheme = config.titleStyle || 'cyber-badge';
+  const isSuraj = !username || username.toLowerCase().includes('suraj') || username === 'your-username';
+  const dynamicAvatarUrl = getDynamicAvatarUrl(config, username);
 
   if (config.bannerType === 'cyber-hud') {
     const activeColor = config.typingColor ? `#${config.typingColor.replace('#', '')}` : '#00FF66';
@@ -24,15 +61,11 @@ function renderHeaderSection(
     ).join(' ');
 
     const mission = config.workingOn || 'secure APIs, SaaS products, creative developer tooling';
-    const avatarSrc = config.avatarUrl && config.avatarUrl.startsWith('/')
-      ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
-      : config.avatarUrl || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/suraj-portrait.jpg';
 
-    // If custom user, display their actual avatar in the terminal enclosure on GitHub
-    const isSurajDefault = !config.githubUsername || config.githubUsername.toLowerCase().includes('suraj') || config.githubUsername === 'your-username';
-    const terminalPortraitSrc = isSurajDefault
+    // Dynamic terminal portrait: Suraj's ASCII portrait for Suraj, or user's live avatar for custom users
+    const terminalPortraitSrc = isSuraj
       ? 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png'
-      : (avatarSrc || 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png');
+      : dynamicAvatarUrl;
 
     parts.push(
 `<div align="center">
@@ -129,9 +162,7 @@ function renderHeaderSection(
         : '';
 
     const width = config.avatarWidth || 160;
-    const avatarSrc = config.avatarUrl.startsWith('/')
-      ? `https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public${config.avatarUrl}`
-      : config.avatarUrl;
+    const avatarSrc = dynamicAvatarUrl;
 
     const borderColor = config.avatarBorderColor || '#00FF66';
     const borderWidth = typeof config.avatarBorderWidth === 'number' ? config.avatarBorderWidth : 3;
@@ -143,7 +174,10 @@ function renderHeaderSection(
 
   // Holographic ASCII Dot Matrix Portrait Banner
   if (config.bannerType === 'ascii-dots' || config.showAsciiHologram) {
-    parts.push(`<p align="center">\n  <img src="https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png" width="340" alt="Holographic ASCII Dot Matrix" />\n</p>`);
+    const dotBannerSrc = isSuraj
+      ? 'https://raw.githubusercontent.com/Dev-Suraj-Dhawal/readmeforge/main/public/ascii-portrait.png'
+      : dynamicAvatarUrl;
+    parts.push(`<p align="center">\n  <img src="${dotBannerSrc}" width="340" alt="Holographic ASCII Dot Matrix" />\n</p>`);
   }
 
   // Animated Typing Header Banner

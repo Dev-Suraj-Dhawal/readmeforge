@@ -69,25 +69,30 @@ function sampleImageToMatrix(img: HTMLImageElement, cols: number, rows: number):
   const sCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
   if (!sCtx) return generateProceduralHologram(cols, rows);
 
-  sCtx.drawImage(img, 0, 0, cols, rows);
-  const imgData = sCtx.getImageData(0, 0, cols, rows).data;
-  const matrix = new Float32Array(cols * rows);
+  try {
+    sCtx.drawImage(img, 0, 0, cols, rows);
+    const imgData = sCtx.getImageData(0, 0, cols, rows).data;
+    const matrix = new Float32Array(cols * rows);
 
-  for (let i = 0; i < cols * rows; i++) {
-    const idx = i * 4;
-    const r = imgData[idx];
-    const g = imgData[idx + 1];
-    const b = imgData[idx + 2];
-    const a = imgData[idx + 3];
-    if (a < 25) {
-      matrix[i] = 0;
-    } else {
-      // Perceived luminance with gamma contrast enhancement for crisp cyber dots
-      const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-      matrix[i] = Math.pow(lum, 1.12);
+    for (let i = 0; i < cols * rows; i++) {
+      const idx = i * 4;
+      const r = imgData[idx];
+      const g = imgData[idx + 1];
+      const b = imgData[idx + 2];
+      const a = imgData[idx + 3];
+      if (a < 25) {
+        matrix[i] = 0;
+      } else {
+        // Perceived luminance with gamma contrast enhancement for crisp cyber dots
+        const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+        matrix[i] = Math.pow(lum, 1.12);
+      }
     }
+    return matrix;
+  } catch (err) {
+    console.warn('Canvas sampling fallback to procedural hologram:', err);
+    return generateProceduralHologram(cols, rows);
   }
-  return matrix;
 }
 
 export const AsciiDotMatrix: React.FC<AsciiDotMatrixProps> = ({

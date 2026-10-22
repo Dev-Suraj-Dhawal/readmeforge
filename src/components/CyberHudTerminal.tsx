@@ -157,7 +157,12 @@ export const CyberHudTerminal: React.FC<CyberHudTerminalProps> = ({
             {/* Live Synchronous Halftone Dot Matrix - Clean pure CRT portrait without color picker or sync badge */}
             <div className="w-full overflow-hidden rounded-xl">
               <AsciiDotMatrix
-                imageSrc={config.avatarUrl || '/suraj-portrait.jpg'}
+                imageSrc={
+                  config.avatarUrl ||
+                  (!config.githubUsername || config.githubUsername.toLowerCase().includes('suraj') || config.githubUsername === 'your-username'
+                    ? '/suraj-portrait.jpg'
+                    : `https://github.com/${encodeURIComponent(config.githubUsername.trim())}.png`)
+                }
                 dotColor={activeColor}
                 hideHeader={true}
                 hideControls={true}

@@ -30,7 +30,8 @@ export const GitHubSimulator: React.FC<GitHubSimulatorProps> = ({ config, markdo
 
   const username = config.githubUsername || 'your-username';
   const displayName = config.displayName || username;
-  const avatarUrl = config.avatarUrl || '/suraj-portrait.jpg';
+  const isSuraj = !username || username.toLowerCase().includes('suraj') || username === 'your-username';
+  const avatarUrl = config.avatarUrl || (!isSuraj && config.githubUsername ? `https://github.com/${encodeURIComponent(config.githubUsername.trim())}.png` : '/suraj-portrait.jpg');
 
   // Realistic mock contributions grid for simulation
   const contributionWeeks = Array.from({ length: 50 }, (_, w) =>
