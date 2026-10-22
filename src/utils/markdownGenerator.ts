@@ -261,6 +261,18 @@ function renderTechSection(config: ProfileConfig): string {
     });
   }
 
+  // Visual Skill Proficiency Meters
+  if (config.skillMeters && config.skillMeters.length > 0) {
+    badgeMarkdownItems.push('\n<br/>\n');
+    config.skillMeters.forEach((sm) => {
+      const name = encodeURIComponent(sm.name);
+      const pct = encodeURIComponent(`${sm.percentage}%`);
+      const col = (sm.color || '00FF66').replace('#', '');
+      const url = `https://img.shields.io/badge/${name}-${pct}-${col}?style=for-the-badge`;
+      badgeMarkdownItems.push(`  <img src="${url}" alt="${sm.name}: ${sm.percentage}%" />`);
+    });
+  }
+
   return `## 🛠️ Tech Stack & Arsenal\n\n<p align="left">\n${badgeMarkdownItems.join('\n')}\n</p>`;
 }
 
@@ -350,6 +362,16 @@ function renderWidgetsSection(config: ProfileConfig, username: string): string {
     );
   }
 
+  if (w.showWakatime) {
+    const wakaUser = (w.wakatimeUsername || config.githubUsername || username).trim();
+    if (wakaUser) {
+      const theme = encodeURIComponent(w.wakatimeTheme || w.quoteTheme || 'radical');
+      widgetCards.push(
+        `<p align="center">\n  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=${encodeURIComponent(wakaUser)}&theme=${theme}&layout=compact" alt="WakaTime Weekly Coding Stats" />\n</p>`
+      );
+    }
+  }
+
   if (widgetCards.length === 0) return '';
 
   return `## ⚡ Dynamic Developer Live Widgets\n\n${widgetCards.join('\n\n')}`;
@@ -357,6 +379,28 @@ function renderWidgetsSection(config: ProfileConfig, username: string): string {
 
 function renderProjectsSection(config: ProfileConfig): string {
   if (!config.projects || config.projects.length === 0) return '';
+
+  const username = config.githubUsername.trim() || 'your-username';
+  const isPinnedMode = config.projectDisplayMode === 'pinned-cards';
+
+  if (isPinnedMode) {
+    const theme = config.stats.statsTheme === 'matrix' ? 'matrix' : (config.stats.statsTheme || 'radical');
+    const themeParam = theme === 'matrix'
+      ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
+      : `theme=${encodeURIComponent(theme)}`;
+
+    const cards = config.projects.map((proj) => {
+      let repoName = proj.title.replace(/\s+/g, '-');
+      if (proj.repoUrl) {
+        const match = proj.repoUrl.match(/github\.com\/[^/]+\/([^/]+)/);
+        if (match && match[1]) repoName = match[1];
+      }
+      const repoUrl = proj.repoUrl || `https://github.com/${username}/${repoName}`;
+      return `  <a href="${repoUrl}" target="_blank">\n    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${encodeURIComponent(username)}&repo=${encodeURIComponent(repoName)}&${themeParam}" alt="${proj.title}" />\n  </a>`;
+    });
+
+    return `## 🚀 Featured Projects\n\n<p align="center">\n${cards.join('\n')}\n</p>`;
+  }
 
   const lines: string[] = [
     `## 🚀 Featured Projects\n`,

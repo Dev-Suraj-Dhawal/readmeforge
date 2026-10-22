@@ -1,6 +1,6 @@
 import React from 'react';
 import { LiveWidgetsConfig, DEFAULT_LIVE_WIDGETS } from '../../types';
-import { Sparkles, Terminal, Code2, Quote, Smile, ExternalLink, RefreshCw } from 'lucide-react';
+import { Sparkles, Terminal, Code2, Quote, Smile, ExternalLink, RefreshCw, Clock } from 'lucide-react';
 
 interface LiveWidgetsEditorProps {
   widgets?: LiveWidgetsConfig;
@@ -266,6 +266,86 @@ export const LiveWidgetsEditor: React.FC<LiveWidgetsEditorProps> = ({
                   currentWidgets.jokeTheme || 'dark'
                 )}`}
                 alt="Dev Joke Preview"
+                className="max-w-full h-auto rounded-lg shadow-md"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* WIDGET 4: WAKATIME WEEKLY CODING STATS */}
+      <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+              <Clock className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-white block">
+                WakaTime Weekly Coding Stats
+              </span>
+              <span className="text-[11px] text-slate-400">
+                Displays active hours spent in code editors, top languages, and daily velocity.
+              </span>
+            </div>
+          </div>
+
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={Boolean(currentWidgets.showWakatime)}
+              onChange={(e) => update({ showWakatime: e.target.checked })}
+              className="sr-only peer"
+            />
+            <div className="w-10 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500"></div>
+          </label>
+        </div>
+
+        {currentWidgets.showWakatime && (
+          <div className="pt-2 border-t border-slate-800/80 space-y-3 animate-fadeIn">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-slate-300">
+                  WakaTime Username
+                </label>
+                <input
+                  type="text"
+                  value={currentWidgets.wakatimeUsername || ''}
+                  onChange={(e) => update({ wakatimeUsername: e.target.value })}
+                  placeholder={githubUsername || 'username'}
+                  className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold text-slate-300">
+                  Card Theme
+                </label>
+                <select
+                  value={currentWidgets.wakatimeTheme || 'radical'}
+                  onChange={(e) => update({ wakatimeTheme: e.target.value })}
+                  className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  {QUOTE_THEMES.map((th) => (
+                    <option key={th.id} value={th.id}>
+                      {th.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Widget Live Visual Preview */}
+            <div className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 flex flex-col items-center gap-2">
+              <span className="text-[10px] text-slate-500 font-mono">LIVE WAKATIME PREVIEW</span>
+              <img
+                src={`https://github-readme-stats.vercel.app/api/wakatime?username=${encodeURIComponent(
+                  currentWidgets.wakatimeUsername || githubUsername || 'anuraghazra'
+                )}&theme=${encodeURIComponent(
+                  currentWidgets.wakatimeTheme || 'radical'
+                )}&layout=compact`}
+                alt="WakaTime Preview"
                 className="max-w-full h-auto rounded-lg shadow-md"
                 loading="lazy"
               />

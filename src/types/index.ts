@@ -75,6 +75,9 @@ export interface LiveWidgetsConfig {
   quoteTheme: string;
   showDevJoke: boolean;
   jokeTheme: string;
+  showWakatime?: boolean;
+  wakatimeUsername?: string;
+  wakatimeTheme?: string;
 }
 
 export const DEFAULT_LIVE_WIDGETS: LiveWidgetsConfig = {
@@ -85,6 +88,9 @@ export const DEFAULT_LIVE_WIDGETS: LiveWidgetsConfig = {
   quoteTheme: 'radical',
   showDevJoke: false,
   jokeTheme: 'dark',
+  showWakatime: false,
+  wakatimeUsername: '',
+  wakatimeTheme: 'radical',
 };
 
 export interface StatsConfig {
@@ -119,6 +125,13 @@ export interface CustomBadgeItem {
   message: string;
   color: string;
   logo?: string;
+}
+
+export interface SkillMeterItem {
+  id: string;
+  name: string;
+  percentage: number;
+  color?: string;
 }
 
 export interface ProfileConfig {
@@ -166,15 +179,18 @@ export interface ProfileConfig {
   // Sections
   techBadges: string[]; // ids of selected badges
   customBadges?: CustomBadgeItem[];
+  skillMeters?: SkillMeterItem[];
   badgeStyle: BadgeStyle;
   
   socials: SocialLink[];
   stats: StatsConfig;
   projects: ProjectItem[];
+  projectDisplayMode?: 'table' | 'pinned-cards';
   support: SupportPlatform[];
   
   sectionOrder?: SectionItem[];
   widgets?: LiveWidgetsConfig;
+  globalPalette?: 'matrix' | 'cyan' | 'synthwave' | 'amber' | 'crimson' | 'monochrome';
   
   customMarkdown: string;
 }

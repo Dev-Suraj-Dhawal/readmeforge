@@ -150,7 +150,7 @@ export function calculateProfileScore(config: ProfileConfig): ProfileAuditResult
 
   // 5. Dynamic Cloud Live Widgets (10 max)
   const widgets = config.widgets;
-  const hasWidgets = Boolean(widgets?.showLeetCode || widgets?.showDevQuote || widgets?.showDevJoke);
+  const hasWidgets = Boolean(widgets?.showLeetCode || widgets?.showDevQuote || widgets?.showDevJoke || widgets?.showWakatime);
   items.push({
     id: 'widgets-dyno',
     category: 'widgets',
@@ -158,7 +158,7 @@ export function calculateProfileScore(config: ProfileConfig): ProfileAuditResult
     passed: hasWidgets,
     score: hasWidgets ? 10 : 0,
     maxScore: 10,
-    tip: 'Inject auto-refreshing LeetCode performance, daily quotes, or dev jokes.',
+    tip: 'Inject auto-refreshing LeetCode performance, daily quotes, dev jokes, or WakaTime stats.',
     targetTab: 'widgets'
   });
 
