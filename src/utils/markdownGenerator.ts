@@ -235,12 +235,31 @@ function renderAboutSection(config: ProfileConfig): string {
 }
 
 function renderTechSection(config: ProfileConfig): string {
-  if (!config.techBadges || config.techBadges.length === 0) return '';
+  const hasBadges = config.techBadges && config.techBadges.length > 0;
+  const hasCustom = config.customBadges && config.customBadges.length > 0;
+  if (!hasBadges && !hasCustom) return '';
 
-  const badgeMarkdownItems = config.techBadges
-    .map((id) => TECH_BADGES.find((b) => b.id === id))
-    .filter((b): b is NonNullable<typeof b> => Boolean(b))
-    .map((b) => `  <img src="${getBadgeUrl(b, config.badgeStyle)}" alt="${b.name}" />`);
+  const badgeMarkdownItems: string[] = [];
+
+  if (hasBadges) {
+    config.techBadges
+      .map((id) => TECH_BADGES.find((b) => b.id === id))
+      .filter((b): b is NonNullable<typeof b> => Boolean(b))
+      .forEach((b) => {
+        badgeMarkdownItems.push(`  <img src="${getBadgeUrl(b, config.badgeStyle)}" alt="${b.name}" />`);
+      });
+  }
+
+  if (hasCustom && config.customBadges) {
+    config.customBadges.forEach((cb) => {
+      const label = encodeURIComponent(cb.label);
+      const msg = encodeURIComponent(cb.message);
+      const col = cb.color.replace('#', '') || '00FF66';
+      const logoParam = cb.logo ? `&logo=${encodeURIComponent(cb.logo)}` : '';
+      const url = `https://img.shields.io/badge/${label}-${msg}-${col}?style=${config.badgeStyle}${logoParam}`;
+      badgeMarkdownItems.push(`  <img src="${url}" alt="${cb.label}: ${cb.message}" />`);
+    });
+  }
 
   return `## 🛠️ Tech Stack & Arsenal\n\n<p align="left">\n${badgeMarkdownItems.join('\n')}\n</p>`;
 }
@@ -251,6 +270,7 @@ function renderStatsSection(config: ProfileConfig, username: string): string {
     config.stats.showStreak ||
     config.stats.showTopLangs ||
     config.stats.showTrophies ||
+    config.stats.showActivityGraph ||
     config.stats.showActivitySnake;
 
   if (!hasStats) return '';
@@ -286,6 +306,12 @@ function renderStatsSection(config: ProfileConfig, username: string): string {
       ? 'title_color=00FF66&text_color=FFFFFF&icon_color=00FF66&bg_color=04080e&border_color=00FF66'
       : `theme=${config.stats.topLangsTheme || 'radical'}`;
     statBlocks.push(`<p align="center">\n  <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs?username=${username}&layout=${config.stats.topLangsLayout}&${topLangsThemeParam}&hide_border=false" alt="Top Languages" />\n</p>`);
+  }
+
+  // Commit Activity Mountain Graph
+  if (config.stats.showActivityGraph) {
+    const graphTheme = config.stats.activityGraphTheme || 'github-compact';
+    statBlocks.push(`<p align="center">\n  <img src="https://activity-graph.vercel.app/graph?username=${encodeURIComponent(username)}&theme=${encodeURIComponent(graphTheme)}&area=true&hide_border=true" alt="Commit Activity Graph" />\n</p>`);
   }
 
   // Contribution Snake Animation

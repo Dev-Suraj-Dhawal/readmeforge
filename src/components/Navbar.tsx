@@ -13,7 +13,8 @@ import {
   Share2,
   Terminal,
   FileJson,
-  Upload
+  Upload,
+  Award
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import confetti from 'canvas-confetti';
@@ -24,6 +25,9 @@ interface NavbarProps {
   onCopyMarkdown: () => void;
   onDownloadMarkdown: () => void;
   onOpenGuide: () => void;
+  onOpenAudit?: () => void;
+  profileScore?: number;
+  profileGrade?: string;
   onReset: () => void;
   onExportJson?: () => void;
   onImportJson?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -36,6 +40,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onCopyMarkdown,
   onDownloadMarkdown,
   onOpenGuide,
+  onOpenAudit,
+  profileScore,
+  profileGrade = 'A',
   onReset,
   onExportJson,
   onImportJson,
@@ -143,6 +150,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Profile Readiness & Recruiter Score Pill */}
+          {onOpenAudit && typeof profileScore === 'number' && (
+            <button
+              onClick={onOpenAudit}
+              title="Inspect Profile Readiness & Recruiter Conversion Audit"
+              className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-xl border transition cursor-pointer font-medium ${
+                profileScore >= 90
+                  ? 'bg-emerald-950/50 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/50'
+                  : profileScore >= 75
+                  ? 'bg-cyan-950/50 border-cyan-500/50 text-cyan-300 hover:bg-cyan-900/50'
+                  : 'bg-amber-950/50 border-amber-500/50 text-amber-300 hover:bg-amber-900/50'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span className="font-mono font-bold">{profileScore}%</span>
+              <span className="hidden sm:inline text-[11px] opacity-80 font-bold">{profileGrade}</span>
+            </button>
+          )}
+
           {/* Guide Tutorial */}
           <button
             onClick={onOpenGuide}

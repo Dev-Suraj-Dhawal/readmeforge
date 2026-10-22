@@ -104,10 +104,21 @@ export interface StatsConfig {
   showTrophies: boolean;
   trophiesTheme: string;
   
+  showActivityGraph?: boolean;
+  activityGraphTheme?: string;
+  
   showActivitySnake: boolean;
   showProfileViews: boolean;
   viewsColor: string;
   viewsStyle: BadgeStyle;
+}
+
+export interface CustomBadgeItem {
+  id: string;
+  label: string;
+  message: string;
+  color: string;
+  logo?: string;
 }
 
 export interface ProfileConfig {
@@ -154,6 +165,7 @@ export interface ProfileConfig {
 
   // Sections
   techBadges: string[]; // ids of selected badges
+  customBadges?: CustomBadgeItem[];
   badgeStyle: BadgeStyle;
   
   socials: SocialLink[];

@@ -17,6 +17,8 @@ import { LiveWidgetsEditor } from './components/Editor/LiveWidgetsEditor';
 import { GitHubSimulator } from './components/Preview/GitHubSimulator';
 import { ReadmePreview } from './components/Preview/ReadmePreview';
 import { GitHubGuideModal } from './components/Modals/GitHubGuideModal';
+import { ProfileAuditModal } from './components/Modals/ProfileAuditModal';
+import { calculateProfileScore } from './utils/profileAuditor';
 import { 
   User, 
   Sparkles, 
@@ -31,7 +33,8 @@ import {
   PanelRightClose,
   Zap,
   Layers,
-  ArrowUpDown
+  ArrowUpDown,
+  Award
 } from 'lucide-react';
 
 const STORAGE_KEY = 'readme_forge_config_v5_avatar_studio';
@@ -52,6 +55,7 @@ export default function App() {
   const [editorSubTab, setEditorSubTab] = useState<'profile' | 'layout' | 'header' | 'badges' | 'stats' | 'widgets' | 'bio' | 'socials' | 'projects'>('profile');
   const [activeTemplateId, setActiveTemplateId] = useState<string>(TEMPLATE_PRESETS[0].id);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
   const [mobileView, setMobileView] = useState<'builder' | 'preview'>('builder');
 
   // Custom markdown buffer when in raw mode
@@ -60,6 +64,11 @@ export default function App() {
   // Auto-generate markdown whenever config changes
   const generatedMarkdown = useMemo(() => {
     return generateMarkdown(config);
+  }, [config]);
+
+  // Real-time Profile Readiness & Recruiter Score Audit
+  const profileAudit = useMemo(() => {
+    return calculateProfileScore(config);
   }, [config]);
 
   // Sync custom markdown text on initial load or regenerate
@@ -156,6 +165,9 @@ export default function App() {
         onCopyMarkdown={handleCopyMarkdown}
         onDownloadMarkdown={handleDownloadMarkdown}
         onOpenGuide={() => setIsGuideOpen(true)}
+        onOpenAudit={() => setIsAuditOpen(true)}
+        profileScore={profileAudit.totalScore}
+        profileGrade={profileAudit.grade}
         onReset={handleReset}
         onExportJson={handleExportJson}
         onImportJson={handleImportJson}
@@ -231,6 +243,21 @@ export default function App() {
               </div>
 
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsAuditOpen(true)}
+                  className={`text-xs px-3 py-1.5 rounded-lg border cursor-pointer transition flex items-center gap-1.5 ${
+                    profileAudit.totalScore >= 90
+                      ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/50'
+                      : profileAudit.totalScore >= 75
+                      ? 'bg-cyan-950/50 border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/50'
+                      : 'bg-amber-950/50 border-amber-500/40 text-amber-300 hover:bg-amber-900/50'
+                  }`}
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Audit: <strong>{profileAudit.totalScore}%</strong></span>
+                  <span className="text-[10px] opacity-75 font-bold">({profileAudit.grade})</span>
+                </button>
+
                 <button
                   onClick={() => setActiveTab('templates')}
                   className="text-xs text-purple-300 hover:text-purple-200 bg-purple-950/50 hover:bg-purple-900/50 border border-purple-800/50 px-3 py-1.5 rounded-lg cursor-pointer transition"
@@ -373,6 +400,17 @@ export default function App() {
         isOpen={isGuideOpen}
         onClose={() => setIsGuideOpen(false)}
         username={config.githubUsername}
+      />
+
+      {/* Profile Readiness & Recruiter Score Audit Modal */}
+      <ProfileAuditModal
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
+        audit={profileAudit}
+        onNavigateTab={(tab) => {
+          setEditorSubTab(tab);
+          setActiveTab('editor');
+        }}
       />
 
       {/* Footer */}

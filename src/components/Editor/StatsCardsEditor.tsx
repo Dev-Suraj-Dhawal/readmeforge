@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatsConfig, BadgeStyle } from '../../types';
-import { BarChart3, Flame, Trophy, Eye, CheckCircle2, Sliders, Palette } from 'lucide-react';
+import { BarChart3, Flame, Trophy, Eye, CheckCircle2, Sliders, Palette, TrendingUp } from 'lucide-react';
 
 interface StatsCardsEditorProps {
   stats: StatsConfig;
@@ -9,6 +9,16 @@ interface StatsCardsEditorProps {
 }
 
 export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onChange, username }) => {
+  const graphThemes = [
+    { id: 'github-compact', name: 'GitHub Compact (Dark)' },
+    { id: 'matrix', name: 'Matrix Green' },
+    { id: 'dracula', name: 'Dracula' },
+    { id: 'nord', name: 'Nord Ice' },
+    { id: 'radical', name: 'Radical Cyber' },
+    { id: 'react', name: 'React Cyan' },
+    { id: 'solarized-dark', name: 'Solarized Dark' }
+  ];
+
   const themes = [
     { id: 'radical', name: 'Radical (Neon Pink & Cyan)' },
     { id: 'tokyonight', name: 'Tokyo Night (Deep Indigo)' },
@@ -286,6 +296,55 @@ export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onCha
                   </option>
                 ))}
               </select>
+            </div>
+          )}
+        </div>
+
+        {/* Commit Activity Mountain Graph */}
+        <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <div>
+                <span className="text-xs font-semibold text-white block">Commit Activity Mountain Graph</span>
+                <span className="text-[11px] text-slate-400">Dynamic linear SVG wave visualizing annual commit velocity</span>
+              </div>
+            </div>
+            <input
+              type="checkbox"
+              checked={Boolean(stats.showActivityGraph)}
+              onChange={(e) => onChange({ showActivityGraph: e.target.checked })}
+              className="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 cursor-pointer"
+            />
+          </div>
+
+          {stats.showActivityGraph && (
+            <div className="pt-2 border-t border-slate-800/80 space-y-3">
+              <div>
+                <label className="text-[11px] text-slate-300 font-medium block mb-1">Graph Theme</label>
+                <select
+                  value={stats.activityGraphTheme || 'github-compact'}
+                  onChange={(e) => onChange({ activityGraphTheme: e.target.value })}
+                  className="w-full sm:w-1/2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white"
+                >
+                  {graphThemes.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Live Preview */}
+              <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800/80 flex flex-col items-center">
+                <span className="text-[10px] text-slate-500 font-mono mb-1">ACTIVITY GRAPH PREVIEW</span>
+                <img
+                  src={`https://activity-graph.vercel.app/graph?username=${encodeURIComponent(username || 'Dev-Suraj-Dhawal')}&theme=${encodeURIComponent(stats.activityGraphTheme || 'github-compact')}&area=true&hide_border=true`}
+                  alt="Activity Graph Preview"
+                  className="max-w-full h-auto rounded-lg"
+                  loading="lazy"
+                />
+              </div>
             </div>
           )}
         </div>
