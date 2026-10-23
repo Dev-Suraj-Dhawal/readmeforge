@@ -18,7 +18,10 @@ import { GitHubSimulator } from './components/Preview/GitHubSimulator';
 import { ReadmePreview } from './components/Preview/ReadmePreview';
 import { GitHubGuideModal } from './components/Modals/GitHubGuideModal';
 import { ProfileAuditModal } from './components/Modals/ProfileAuditModal';
+import { SocialCardModal } from './components/Modals/SocialCardModal';
+import { SnakeWorkflowModal } from './components/Modals/SnakeWorkflowModal';
 import { calculateProfileScore } from './utils/profileAuditor';
+import { cyberAudio } from './utils/audioFx';
 import { 
   User, 
   Sparkles, 
@@ -216,6 +219,8 @@ export default function App() {
   const [activeTemplateId, setActiveTemplateId] = useState<string>(TEMPLATE_PRESETS[0].id);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isAuditOpen, setIsAuditOpen] = useState(false);
+  const [isShareCardOpen, setIsShareCardOpen] = useState(false);
+  const [isSnakeModalOpen, setIsSnakeModalOpen] = useState(false);
   const [mobileView, setMobileView] = useState<'builder' | 'preview'>('builder');
 
   // Custom markdown buffer when in raw mode
@@ -250,6 +255,7 @@ export default function App() {
   };
 
   const handleApplyPalette = (palette: typeof GLOBAL_PALETTES[0]) => {
+    cyberAudio.playHarmonize();
     setConfig((prev) => ({
       ...prev,
       typingColor: palette.config.typingColor,
@@ -269,6 +275,7 @@ export default function App() {
   };
 
   const handleSelectTemplate = (template: TemplatePreset) => {
+    cyberAudio.playSuccess();
     setConfig(template.config);
     setActiveTemplateId(template.id);
     setActiveTab('editor');
@@ -345,6 +352,7 @@ export default function App() {
         onDownloadMarkdown={handleDownloadMarkdown}
         onOpenGuide={() => setIsGuideOpen(true)}
         onOpenAudit={() => setIsAuditOpen(true)}
+        onOpenShareCard={() => setIsShareCardOpen(true)}
         profileScore={profileAudit.totalScore}
         profileGrade={profileAudit.grade}
         onReset={handleReset}
@@ -514,7 +522,10 @@ export default function App() {
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => setEditorSubTab(tab.id)}
+                        onClick={() => {
+                          cyberAudio.playClick();
+                          setEditorSubTab(tab.id);
+                        }}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl whitespace-nowrap cursor-pointer transition-all ${
                           isActive
                             ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold shadow-sm'
@@ -550,6 +561,7 @@ export default function App() {
                       stats={config.stats}
                       onChange={(st) => updateConfig({ stats: { ...config.stats, ...st } })}
                       username={config.githubUsername}
+                      onOpenSnakeModal={() => setIsSnakeModalOpen(true)}
                     />
                   )}
                   {editorSubTab === 'widgets' && (
@@ -619,6 +631,22 @@ export default function App() {
           setEditorSubTab(tab);
           setActiveTab('editor');
         }}
+      />
+
+      {/* 1200x630 Developer Passport & Social Share Card Modal */}
+      <SocialCardModal
+        isOpen={isShareCardOpen}
+        onClose={() => setIsShareCardOpen(false)}
+        config={config}
+        score={profileAudit.totalScore}
+        grade={profileAudit.grade}
+      />
+
+      {/* GitHub Snake Action Workflow Generator Modal */}
+      <SnakeWorkflowModal
+        isOpen={isSnakeModalOpen}
+        onClose={() => setIsSnakeModalOpen(false)}
+        username={config.githubUsername}
       />
 
       {/* Footer */}

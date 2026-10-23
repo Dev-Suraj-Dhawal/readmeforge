@@ -1,5 +1,7 @@
 export type BadgeStyle = 'for-the-badge' | 'flat-square' | 'flat' | 'plastic';
 
+export type ReadmeLanguage = 'en' | 'es' | 'ja' | 'de' | 'fr' | 'pt' | 'zh';
+
 export interface TechBadge {
   id: string;
   name: string;
@@ -191,6 +193,7 @@ export interface ProfileConfig {
   sectionOrder?: SectionItem[];
   widgets?: LiveWidgetsConfig;
   globalPalette?: 'matrix' | 'cyan' | 'synthwave' | 'amber' | 'crimson' | 'monochrome';
+  readmeLanguage?: ReadmeLanguage;
   
   customMarkdown: string;
 }

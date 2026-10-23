@@ -1,5 +1,92 @@
-import { ProfileConfig, DEFAULT_SECTION_ORDER } from '../types';
+import { ProfileConfig, DEFAULT_SECTION_ORDER, ReadmeLanguage } from '../types';
 import { TECH_BADGES, getBadgeUrl } from '../data/techStackBadges';
+
+export const README_I18N: Record<ReadmeLanguage, {
+  about: string;
+  tech: string;
+  stats: string;
+  widgets: string;
+  projects: string;
+  socials: string;
+  support: string;
+  snake: string;
+}> = {
+  en: {
+    about: 'About Me',
+    tech: 'Tech Stack & Arsenal',
+    stats: 'GitHub Analytics & Milestones',
+    widgets: 'Dynamic Developer Live Widgets',
+    projects: 'Featured Projects',
+    socials: 'Connect With Me',
+    support: 'Support My Work',
+    snake: 'Contribution Activity Matrix'
+  },
+  es: {
+    about: 'Sobre Mí',
+    tech: 'Arsenal Tecnológico & Habilidades',
+    stats: 'Estadísticas y Métricas de GitHub',
+    widgets: 'Widgets Dinámicos en Vivo',
+    projects: 'Proyectos Destacados',
+    socials: 'Conecta Conmigo',
+    support: 'Apoya Mi Trabajo',
+    snake: 'Matriz de Actividad de Contribuciones'
+  },
+  ja: {
+    about: '自己紹介',
+    tech: '技術スタック & 開発ツール',
+    stats: 'GitHub アナリティクス & 実績',
+    widgets: 'リアルタイム開発者ウィジェット',
+    projects: '注目のプロジェクト',
+    socials: 'SNS・連絡先',
+    support: 'サポート',
+    snake: 'コントリビューション活動マトリクス'
+  },
+  de: {
+    about: 'Über Mich',
+    tech: 'Tech-Arsenal & Werkzeuge',
+    stats: 'GitHub Statistiken & Meilensteine',
+    widgets: 'Dynamische Entwickler-Widgets',
+    projects: 'Ausgewählte Projekte',
+    socials: 'Verbinde Dich Mit Mir',
+    support: 'Unterstütze Meine Arbeit',
+    snake: 'Beitragsaktivitäts-Matrix'
+  },
+  fr: {
+    about: 'À Propos De Moi',
+    tech: 'Arsenal Technologique & Compétences',
+    stats: 'Statistiques & Jalons GitHub',
+    widgets: 'Widgets Dynamiques en Direct',
+    projects: 'Projets En Vedette',
+    socials: 'Me Contacter',
+    support: 'Soutenez Mon Travail',
+    snake: 'Matrice d\'Activité des Contributions'
+  },
+  pt: {
+    about: 'Sobre Mim',
+    tech: 'Arsenal Tecnológico & Habilidades',
+    stats: 'Métricas e Marcos do GitHub',
+    widgets: 'Widgets Dinâmicos em Tempo Real',
+    projects: 'Projetos em Destaque',
+    socials: 'Conecte-se Comigo',
+    support: 'Apoie Meu Trabalho',
+    snake: 'Matriz de Atividade de Contribuições'
+  },
+  zh: {
+    about: '关于我',
+    tech: '技术栈与武器库',
+    stats: 'GitHub 数据统计与里程碑',
+    widgets: '实时动态开发者组件',
+    projects: '精选开源项目',
+    socials: '联系方式与社交网络',
+    support: '赞助与支持',
+    snake: '贡献活跃度矩阵'
+  }
+};
+
+function getI18n(lang?: ReadmeLanguage) {
+  const l = lang || 'en';
+  return README_I18N[l] || README_I18N.en;
+}
 
 function getDynamicAvatarUrl(config: ProfileConfig, username: string): string {
   const isSuraj = !username || username.toLowerCase().includes('suraj') || username === 'your-username';
@@ -222,6 +309,7 @@ function renderQuoteSection(config: ProfileConfig): string {
 }
 
 function renderAboutSection(config: ProfileConfig): string {
+  const i18n = getI18n(config.readmeLanguage);
   const aboutItems: string[] = [];
   if (config.workingOn) aboutItems.push(`- 🔭 **I'm currently working on**: ${config.workingOn}`);
   if (config.learning) aboutItems.push(`- 🌱 **I'm currently learning**: ${config.learning}`);
@@ -231,10 +319,11 @@ function renderAboutSection(config: ProfileConfig): string {
   if (config.funFact) aboutItems.push(`- ⚡ **Fun fact**: ${config.funFact}`);
 
   if (aboutItems.length === 0) return '';
-  return `## 💫 About Me\n\n${aboutItems.join('\n')}`;
+  return `## 💫 ${i18n.about}\n\n${aboutItems.join('\n')}`;
 }
 
 function renderTechSection(config: ProfileConfig): string {
+  const i18n = getI18n(config.readmeLanguage);
   const hasBadges = config.techBadges && config.techBadges.length > 0;
   const hasCustom = config.customBadges && config.customBadges.length > 0;
   if (!hasBadges && !hasCustom) return '';
@@ -273,10 +362,11 @@ function renderTechSection(config: ProfileConfig): string {
     });
   }
 
-  return `## 🛠️ Tech Stack & Arsenal\n\n<p align="left">\n${badgeMarkdownItems.join('\n')}\n</p>`;
+  return `## 🛠️ ${i18n.tech}\n\n<p align="left">\n${badgeMarkdownItems.join('\n')}\n</p>`;
 }
 
 function renderStatsSection(config: ProfileConfig, username: string): string {
+  const i18n = getI18n(config.readmeLanguage);
   const hasStats =
     config.stats.showStatsCard ||
     config.stats.showStreak ||
@@ -287,7 +377,7 @@ function renderStatsSection(config: ProfileConfig, username: string): string {
 
   if (!hasStats) return '';
 
-  const statBlocks: string[] = [`## 📊 GitHub Analytics & Milestones`];
+  const statBlocks: string[] = [`## 📊 ${i18n.stats}`];
 
   // Trophies
   if (config.stats.showTrophies) {
@@ -328,13 +418,14 @@ function renderStatsSection(config: ProfileConfig, username: string): string {
 
   // Contribution Snake Animation
   if (config.stats.showActivitySnake) {
-    statBlocks.push(`### 🐍 Contribution Activity Matrix\n\n<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake-dark.svg">\n  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n  <img alt="github contribution snake" src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n</picture>`);
+    statBlocks.push(`### 🐍 ${i18n.snake}\n\n<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake-dark.svg">\n  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n  <img alt="github contribution snake" src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg">\n</picture>`);
   }
 
   return statBlocks.join('\n\n');
 }
 
 function renderWidgetsSection(config: ProfileConfig, username: string): string {
+  const i18n = getI18n(config.readmeLanguage);
   const w = config.widgets;
   if (!w) return '';
 
@@ -374,12 +465,13 @@ function renderWidgetsSection(config: ProfileConfig, username: string): string {
 
   if (widgetCards.length === 0) return '';
 
-  return `## ⚡ Dynamic Developer Live Widgets\n\n${widgetCards.join('\n\n')}`;
+  return `## ⚡ ${i18n.widgets}\n\n${widgetCards.join('\n\n')}`;
 }
 
 function renderProjectsSection(config: ProfileConfig): string {
   if (!config.projects || config.projects.length === 0) return '';
 
+  const i18n = getI18n(config.readmeLanguage);
   const username = config.githubUsername.trim() || 'your-username';
   const isPinnedMode = config.projectDisplayMode === 'pinned-cards';
 
@@ -399,11 +491,11 @@ function renderProjectsSection(config: ProfileConfig): string {
       return `  <a href="${repoUrl}" target="_blank">\n    <img src="https://github-readme-stats.vercel.app/api/pin/?username=${encodeURIComponent(username)}&repo=${encodeURIComponent(repoName)}&${themeParam}" alt="${proj.title}" />\n  </a>`;
     });
 
-    return `## 🚀 Featured Projects\n\n<p align="center">\n${cards.join('\n')}\n</p>`;
+    return `## 🚀 ${i18n.projects}\n\n<p align="center">\n${cards.join('\n')}\n</p>`;
   }
 
   const lines: string[] = [
-    `## 🚀 Featured Projects\n`,
+    `## 🚀 ${i18n.projects}\n`,
     `| Project | Description | Tech Stack | Links |`,
     `| :--- | :--- | :--- | :--- |`
   ];
@@ -422,6 +514,7 @@ function renderProjectsSection(config: ProfileConfig): string {
 }
 
 function renderSocialsSection(config: ProfileConfig): string {
+  const i18n = getI18n(config.readmeLanguage);
   const enabledSocials = config.socials.filter((s) => s.enabled && s.url);
   if (enabledSocials.length === 0) return '';
 
@@ -436,10 +529,11 @@ function renderSocialsSection(config: ProfileConfig): string {
     badges.push(`  <a href="${soc.url}" target="_blank">\n    <img src="https://img.shields.io/badge/${encodeURIComponent(soc.platform)}-000000?style=${config.badgeStyle}&logo=${logo}&logoColor=white" alt="${soc.platform}" />\n  </a>`);
   });
 
-  return `## 🌐 Connect With Me\n\n<p align="left">\n${badges.join('\n')}\n</p>`;
+  return `## 🌐 ${i18n.socials}\n\n<p align="left">\n${badges.join('\n')}\n</p>`;
 }
 
 function renderSupportSection(config: ProfileConfig): string {
+  const i18n = getI18n(config.readmeLanguage);
   const enabledSupport = config.support.filter((s) => s.enabled && s.username);
   if (enabledSupport.length === 0) return '';
 
@@ -454,7 +548,7 @@ function renderSupportSection(config: ProfileConfig): string {
     }
   });
 
-  return `## ☕ Support My Work\n\n<p align="left">\n${buttons.join('\n')}\n</p>`;
+  return `## ☕ ${i18n.support}\n\n<p align="left">\n${buttons.join('\n')}\n</p>`;
 }
 
 export function generateMarkdown(config: ProfileConfig): string {

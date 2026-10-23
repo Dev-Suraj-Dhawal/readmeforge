@@ -13,14 +13,15 @@ import {
   Link as LinkIcon, 
   Camera, 
   Sparkles, 
-  Sliders,
-  Check,
-  RefreshCw,
-  Palette,
-  Shield,
-  Download,
-  Zap,
-  Loader2
+  Sliders, 
+  Check, 
+  RefreshCw, 
+  Palette, 
+  Shield, 
+  Download, 
+  Zap, 
+  Loader2,
+  Languages
 } from 'lucide-react';
 
 interface ProfileEditorProps {
@@ -1119,6 +1120,49 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ config, onChange }
             placeholder="https://surajdhawal.com.np/"
             className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
           />
+        </div>
+
+        {/* README Section Header Regionalizer (i18n) */}
+        <div className="sm:col-span-2 pt-2 border-t border-slate-800/80 space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+              <Languages className="w-3.5 h-3.5 text-cyan-400" />
+              <span>README Section Language Regionalizer</span>
+            </label>
+            <span className="text-[10px] text-cyan-400 font-mono">i18n Multi-Language</span>
+          </div>
+          <p className="text-[11px] text-slate-400">
+            Automatically translates section headlines (About Me, Tech Stack, Live Stats, Pinned Repos, Connect) into your target regional language.
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+            {[
+              { id: 'en', label: 'English', flag: '🇬🇧' },
+              { id: 'es', label: 'Español', flag: '🇪🇸' },
+              { id: 'ja', label: '日本語', flag: '🇯🇵' },
+              { id: 'de', label: 'Deutsch', flag: '🇩🇪' },
+              { id: 'fr', label: 'Français', flag: '🇫🇷' },
+              { id: 'pt', label: 'Português', flag: '🇧🇷' },
+              { id: 'zh', label: '简体中文', flag: '🇨🇳' }
+            ].map((lang) => {
+              const isSelected = (config.readmeLanguage || 'en') === lang.id;
+              return (
+                <button
+                  key={lang.id}
+                  type="button"
+                  onClick={() => onChange({ readmeLanguage: lang.id as any })}
+                  className={`px-3 py-2 rounded-xl border text-xs font-medium cursor-pointer transition flex items-center gap-2 ${
+                    isSelected
+                      ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-md shadow-cyan-500/20 font-semibold'
+                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 hover:bg-slate-800/50'
+                  }`}
+                >
+                  <span className="text-base">{lang.flag}</span>
+                  <span>{lang.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Available For Hire Toggle */}

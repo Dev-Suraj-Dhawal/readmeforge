@@ -6,9 +6,10 @@ interface StatsCardsEditorProps {
   stats: StatsConfig;
   onChange: (updated: Partial<StatsConfig>) => void;
   username: string;
+  onOpenSnakeModal?: () => void;
 }
 
-export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onChange, username }) => {
+export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onChange, username, onOpenSnakeModal }) => {
   const graphThemes = [
     { id: 'github-compact', name: 'GitHub Compact (Dark)' },
     { id: 'matrix', name: 'Matrix Green' },
@@ -350,7 +351,7 @@ export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onCha
         </div>
 
         {/* Contribution Snake Animation */}
-        <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
+        <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-lg">🐍</span>
@@ -366,6 +367,29 @@ export const StatsCardsEditor: React.FC<StatsCardsEditorProps> = ({ stats, onCha
               className="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 cursor-pointer"
             />
           </div>
+
+          {stats.showActivitySnake && (
+            <div className="pt-2 border-t border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-emerald-950/20 p-3 rounded-xl border border-emerald-500/20">
+              <div className="space-y-0.5">
+                <span className="text-xs font-semibold text-emerald-300 block flex items-center gap-1.5">
+                  <span>⚡ GitHub Action Workflow Required</span>
+                </span>
+                <span className="text-[11px] text-slate-400 block">
+                  GitHub requires a daily action workflow to compile your dynamic SVG snake animation.
+                </span>
+              </div>
+
+              {onOpenSnakeModal && (
+                <button
+                  type="button"
+                  onClick={onOpenSnakeModal}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition cursor-pointer shadow-sm shadow-emerald-500/20 shrink-0"
+                >
+                  ⚡ Get 1-Click Snake .yml
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

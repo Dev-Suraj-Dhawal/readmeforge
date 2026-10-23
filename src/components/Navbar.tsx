@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Sparkles, 
   Copy, 
@@ -14,10 +14,13 @@ import {
   Terminal,
   FileJson,
   Upload,
-  Award
+  Award,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import confetti from 'canvas-confetti';
+import { cyberAudio } from '../utils/audioFx';
 
 interface NavbarProps {
   activeTab: 'editor' | 'templates' | 'simulator' | 'raw';
@@ -26,6 +29,7 @@ interface NavbarProps {
   onDownloadMarkdown: () => void;
   onOpenGuide: () => void;
   onOpenAudit?: () => void;
+  onOpenShareCard?: () => void;
   profileScore?: number;
   profileGrade?: string;
   onReset: () => void;
@@ -41,6 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadMarkdown,
   onOpenGuide,
   onOpenAudit,
+  onOpenShareCard,
   profileScore,
   profileGrade = 'A',
   onReset,
@@ -49,9 +54,21 @@ export const Navbar: React.FC<NavbarProps> = ({
   githubUsername
 }) => {
   const [copied, setCopied] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(() => cyberAudio.getSoundEnabled());
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const toggleSound = () => {
+    const newState = cyberAudio.toggleSound();
+    setSoundEnabled(newState);
+  };
+
+  const handleTabSwitch = (tab: 'editor' | 'templates' | 'simulator' | 'raw') => {
+    cyberAudio.playSwitch();
+    setActiveTab(tab);
+  };
+
   const handleCopy = () => {
+    cyberAudio.playSuccess();
     onCopyMarkdown();
     setCopied(true);
     
@@ -99,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Center Mode Switcher Tabs */}
         <nav className="flex items-center p-0.5 sm:p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium max-w-full overflow-x-auto">
           <button
-            onClick={() => setActiveTab('editor')}
+            onClick={() => handleTabSwitch('editor')}
             className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'editor'
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20 font-semibold'
@@ -111,7 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('templates')}
+            onClick={() => handleTabSwitch('templates')}
             className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'templates'
                 ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-md shadow-purple-500/20 font-semibold'
@@ -124,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('simulator')}
+            onClick={() => handleTabSwitch('simulator')}
             className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'simulator'
                 ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 font-semibold'
@@ -136,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('raw')}
+            onClick={() => handleTabSwitch('raw')}
             className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
               activeTab === 'raw'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20 font-semibold'
@@ -150,10 +167,41 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Audio FX Synthesizer Toggle */}
+          <button
+            onClick={toggleSound}
+            title={soundEnabled ? 'Cyberpunk Sound FX Enabled (Click to Mute)' : 'Sound FX Muted (Click to Enable)'}
+            className={`p-1.5 rounded-lg border transition cursor-pointer ${
+              soundEnabled
+                ? 'border-cyan-500/50 text-cyan-400 bg-cyan-950/40 hover:bg-cyan-900/50 shadow-sm shadow-cyan-500/20'
+                : 'border-slate-800 text-slate-500 bg-slate-900/60 hover:text-slate-400'
+            }`}
+          >
+            {soundEnabled ? <Volume2 className="w-3.5 h-3.5 animate-pulse" /> : <VolumeX className="w-3.5 h-3.5" />}
+          </button>
+
+          {/* Social Share Card Studio */}
+          {onOpenShareCard && (
+            <button
+              onClick={() => {
+                cyberAudio.playHarmonize();
+                onOpenShareCard();
+              }}
+              title="Generate 1200x630 Developer Passport & Social Share Card"
+              className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
+            >
+              <Share2 className="w-3.5 h-3.5 text-purple-400" />
+              <span className="hidden sm:inline">Share Card</span>
+            </button>
+          )}
+
           {/* Profile Readiness & Recruiter Score Pill */}
           {onOpenAudit && typeof profileScore === 'number' && (
             <button
-              onClick={onOpenAudit}
+              onClick={() => {
+                cyberAudio.playClick();
+                onOpenAudit();
+              }}
               title="Inspect Profile Readiness & Recruiter Conversion Audit"
               className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-xl border transition cursor-pointer font-medium ${
                 profileScore >= 90
@@ -171,7 +219,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Guide Tutorial */}
           <button
-            onClick={onOpenGuide}
+            onClick={() => {
+              cyberAudio.playClick();
+              onOpenGuide();
+            }}
             title="How to add to GitHub"
             className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
           >
