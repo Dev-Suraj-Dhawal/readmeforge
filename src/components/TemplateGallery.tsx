@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { TEMPLATE_PRESETS } from '../data/templates';
 import { TemplatePreset } from '../types';
 import { Sparkles, ArrowRight, Eye, CheckCircle2, Shield, Flame, Terminal, Star } from 'lucide-react';
+import { cyberAudio } from '../utils/audioFx';
 
 interface TemplateGalleryProps {
   onSelectTemplate: (template: TemplatePreset) => void;
@@ -43,9 +45,14 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
         {/* Category Filters */}
         <div className="mt-6 flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
           {categories.map((cat) => (
-            <button
+            <motion.button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                cyberAudio.playClick();
+                setSelectedCategory(cat);
+              }}
               className={`px-3.5 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all ${
                 selectedCategory === cat
                   ? 'bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/20'
@@ -53,21 +60,25 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
               }`}
             >
               {cat}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
 
-      {/* Templates Grid */}
+      {/* Templates Grid with Framer Motion hover & spring */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map((template) => {
+        {filteredTemplates.map((template, idx) => {
           const isActive = activeTemplateId === template.id;
 
           return (
-            <div
+            <motion.div
               key={template.id}
-              className={`group relative flex flex-col rounded-2xl overflow-hidden bg-slate-900/80 border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10 ${
-                isActive ? 'border-cyan-500 ring-2 ring-cyan-500/20' : 'border-slate-800 hover:border-slate-700'
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.25 }}
+              whileHover={{ y: -6, transition: { type: 'spring', stiffness: 350, damping: 25 } }}
+              className={`group relative flex flex-col rounded-2xl overflow-hidden bg-slate-900/80 border transition-all duration-300 shadow-xl ${
+                isActive ? 'border-cyan-500 ring-2 ring-cyan-500/20 shadow-cyan-500/15' : 'border-slate-800 hover:border-slate-700'
               }`}
             >
               {/* Card Header Preview Area */}
@@ -127,7 +138,9 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 </div>
 
                 {/* Action button */}
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => onSelectTemplate(template)}
                   className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
                     isActive
@@ -137,9 +150,9 @@ export const TemplateGallery: React.FC<TemplateGalleryProps> = ({
                 >
                   <span>{isActive ? 'Current Active Template' : 'Use This Template'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

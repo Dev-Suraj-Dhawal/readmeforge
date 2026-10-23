@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Check, ExternalLink, Copy, Terminal } from 'lucide-react';
 import { GithubIcon } from '../Icons';
 
@@ -60,8 +61,23 @@ export const GitHubGuideModal: React.FC<GitHubGuideModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-8 shadow-2xl overflow-hidden">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+          className="relative w-full max-w-2xl rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-8 shadow-2xl overflow-hidden z-10"
+        >
         {/* Glow backdrop */}
         <div className="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -left-20 -bottom-20 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -109,7 +125,9 @@ export const GitHubGuideModal: React.FC<GitHubGuideModalProps> = ({
 
         {/* Action button */}
         <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-          <a
+          <motion.a
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             href="https://github.com/new"
             target="_blank"
             rel="noreferrer"
@@ -117,16 +135,19 @@ export const GitHubGuideModal: React.FC<GitHubGuideModalProps> = ({
           >
             <span>Open GitHub.com/new</span>
             <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-          <button
+          </motion.a>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 text-xs font-bold hover:brightness-110 shadow-lg shadow-cyan-500/20 transition"
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 text-xs font-bold hover:brightness-110 shadow-lg shadow-cyan-500/20 transition cursor-pointer"
           >
             Got it, Let's Build!
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
-  );
+  </AnimatePresence>
+);
 };
 

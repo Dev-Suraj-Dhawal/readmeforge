@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, Check, Terminal, ExternalLink, Sparkles, FolderGit2 } from 'lucide-react';
 import { cyberAudio } from '../../utils/audioFx';
 import confetti from 'canvas-confetti';
@@ -71,8 +72,23 @@ jobs:
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-7 shadow-2xl overflow-hidden">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+          className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-7 shadow-2xl overflow-hidden z-10"
+        >
         
         {/* Glow Ambient */}
         <div className="absolute -right-20 -top-20 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -170,16 +186,19 @@ jobs:
           <span className="text-[11px] text-slate-500">
             Runs via official GitHub Actions free runner quota.
           </span>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleCopy}
             className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition cursor-pointer flex items-center gap-1.5"
           >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             <span>{copied ? 'Copied to Clipboard' : 'Copy Workflow YAML'}</span>
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
-  );
+  </AnimatePresence>
+);
 };
 

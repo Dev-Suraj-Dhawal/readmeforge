@@ -148,7 +148,7 @@ export interface ProfileConfig {
   availableForHire: boolean;
   
   // Header & Aesthetics
-  themeAesthetic: 'cyberpunk' | 'minimal' | 'lofi' | 'gamified' | 'matrix' | 'dracula';
+  themeAesthetic: 'cyberpunk' | 'minimal' | 'lofi' | 'gamified' | 'matrix' | 'dracula' | string;
   titleStyle?: 'cyber-badge' | 'gradient-glow' | 'terminal-code' | 'minimal-modern';
   bannerType: 'typing' | 'wave' | 'retro' | 'custom' | 'minimal' | 'ascii-dots' | 'cyber-hud';
   customBannerUrl?: string;
@@ -192,7 +192,7 @@ export interface ProfileConfig {
   
   sectionOrder?: SectionItem[];
   widgets?: LiveWidgetsConfig;
-  globalPalette?: 'matrix' | 'cyan' | 'synthwave' | 'amber' | 'crimson' | 'monochrome';
+  globalPalette?: string;
   readmeLanguage?: ReadmeLanguage;
   
   customMarkdown: string;

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Sparkles, 
   Copy, 
@@ -16,7 +17,8 @@ import {
   Upload,
   Award,
   Volume2,
-  VolumeX
+  VolumeX,
+  Palette
 } from 'lucide-react';
 import { GithubIcon } from './Icons';
 import confetti from 'canvas-confetti';
@@ -30,6 +32,7 @@ interface NavbarProps {
   onOpenGuide: () => void;
   onOpenAudit?: () => void;
   onOpenShareCard?: () => void;
+  onOpenThemesModal?: () => void;
   profileScore?: number;
   profileGrade?: string;
   onReset: () => void;
@@ -46,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenGuide,
   onOpenAudit,
   onOpenShareCard,
+  onOpenThemesModal,
   profileScore,
   profileGrade = 'A',
   onReset,
@@ -114,27 +118,37 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Center Mode Switcher Tabs */}
-        <nav className="flex items-center p-0.5 sm:p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium max-w-full overflow-x-auto">
+        <nav className="flex items-center p-0.5 sm:p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium max-w-full overflow-x-auto relative">
           <button
             onClick={() => handleTabSwitch('editor')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
-              activeTab === 'editor'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors shrink-0 z-10 ${
+              activeTab === 'editor' ? 'text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
+            {activeTab === 'editor' && (
+              <motion.div
+                layoutId="activeNavTab"
+                className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg shadow-md shadow-cyan-500/25 -z-10"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
             <Layers className="w-3.5 h-3.5" />
             <span>Builder</span>
           </button>
 
           <button
             onClick={() => handleTabSwitch('templates')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
-              activeTab === 'templates'
-                ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-md shadow-purple-500/20 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors shrink-0 z-10 ${
+              activeTab === 'templates' ? 'text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
+            {activeTab === 'templates' && (
+              <motion.div
+                layoutId="activeNavTab"
+                className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg shadow-md shadow-purple-500/25 -z-10"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
             <Sparkles className="w-3.5 h-3.5 text-pink-400" />
             <span>Templates</span>
             <span className="text-[9px] px-1 py-0.2 rounded-full bg-pink-500/20 text-pink-300 font-mono">6</span>
@@ -142,24 +156,34 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => handleTabSwitch('simulator')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
-              activeTab === 'simulator'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors shrink-0 z-10 ${
+              activeTab === 'simulator' ? 'text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
+            {activeTab === 'simulator' && (
+              <motion.div
+                layoutId="activeNavTab"
+                className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-md shadow-emerald-500/25 -z-10"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
             <GithubIcon className="w-3.5 h-3.5" />
             <span>GitHub <span className="hidden sm:inline">Profile</span></span>
           </button>
 
           <button
             onClick={() => handleTabSwitch('raw')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg cursor-pointer transition-all shrink-0 ${
-              activeTab === 'raw'
-                ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/20 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-3 py-1.5 rounded-lg cursor-pointer transition-colors shrink-0 z-10 ${
+              activeTab === 'raw' ? 'text-white font-semibold' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
+            {activeTab === 'raw' && (
+              <motion.div
+                layoutId="activeNavTab"
+                className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg shadow-md shadow-amber-500/25 -z-10"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
             <Code2 className="w-3.5 h-3.5" />
             <span>Markdown</span>
           </button>
@@ -167,8 +191,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Framer 21 UI Themes Vault Trigger */}
+          {onOpenThemesModal && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                cyberAudio.playHarmonize();
+                onOpenThemesModal();
+              }}
+              title="Browse & Apply 21 Framer UI Themes"
+              className="flex items-center gap-1.5 text-xs text-fuchsia-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-fuchsia-500/40 bg-fuchsia-950/40 hover:bg-fuchsia-900/50 cursor-pointer transition shadow-sm shadow-fuchsia-500/20"
+            >
+              <Palette className="w-3.5 h-3.5 text-fuchsia-400" />
+              <span className="font-semibold">21 Themes</span>
+            </motion.button>
+          )}
+
           {/* Audio FX Synthesizer Toggle */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={toggleSound}
             title={soundEnabled ? 'Cyberpunk Sound FX Enabled (Click to Mute)' : 'Sound FX Muted (Click to Enable)'}
             className={`p-1.5 rounded-lg border transition cursor-pointer ${
@@ -178,26 +221,30 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             {soundEnabled ? <Volume2 className="w-3.5 h-3.5 animate-pulse" /> : <VolumeX className="w-3.5 h-3.5" />}
-          </button>
+          </motion.button>
 
           {/* Social Share Card Studio */}
           {onOpenShareCard && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 cyberAudio.playHarmonize();
                 onOpenShareCard();
               }}
               title="Generate 1200x630 Developer Passport & Social Share Card"
-              className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
+              className="hidden md:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
             >
               <Share2 className="w-3.5 h-3.5 text-purple-400" />
-              <span className="hidden sm:inline">Share Card</span>
-            </button>
+              <span>Share Card</span>
+            </motion.button>
           )}
 
           {/* Profile Readiness & Recruiter Score Pill */}
           {onOpenAudit && typeof profileScore === 'number' && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 cyberAudio.playClick();
                 onOpenAudit();
@@ -214,21 +261,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Award className="w-3.5 h-3.5" />
               <span className="font-mono font-bold">{profileScore}%</span>
               <span className="hidden sm:inline text-[11px] opacity-80 font-bold">{profileGrade}</span>
-            </button>
+            </motion.button>
           )}
 
           {/* Guide Tutorial */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => {
               cyberAudio.playClick();
               onOpenGuide();
             }}
             title="How to add to GitHub"
-            className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
           >
             <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="hidden md:inline">Setup Guide</span>
-          </button>
+            <span>Setup Guide</span>
+          </motion.button>
 
           {/* Hidden JSON file input for importing config */}
           <input
@@ -241,49 +290,59 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Export / Backup JSON Config */}
           {onExportJson && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={onExportJson}
               title="Backup & Export Profile Configuration (.json)"
               className="hidden lg:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
             >
               <FileJson className="w-3.5 h-3.5 text-purple-400" />
               <span>Backup</span>
-            </button>
+            </motion.button>
           )}
 
           {/* Import JSON Config */}
           {onImportJson && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => fileInputRef.current?.click()}
               title="Import Saved Profile Configuration (.json)"
               className="hidden lg:flex items-center gap-1.5 text-xs text-slate-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 cursor-pointer transition"
             >
               <Upload className="w-3.5 h-3.5 text-emerald-400" />
               <span>Restore</span>
-            </button>
+            </motion.button>
           )}
 
           {/* Reset */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.08, rotate: -45 }}
+            whileTap={{ scale: 0.92 }}
             onClick={onReset}
             title="Reset to defaults"
             className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 cursor-pointer transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-          </button>
+          </motion.button>
 
           {/* Download README.md */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onDownloadMarkdown}
             title="Download README.md"
             className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-slate-200 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 bg-slate-800/80 hover:bg-slate-700/80 cursor-pointer transition"
           >
             <Download className="w-3.5 h-3.5 text-slate-300" />
             <span>Export .md</span>
-          </button>
+          </motion.button>
 
           {/* Instant Copy Markdown Button */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleCopy}
             className={`flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-lg transition-all shadow-md cursor-pointer ${
               copied
@@ -302,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Copy README</span>
               </>
             )}
-          </button>
+          </motion.button>
         </div>
 
       </div>

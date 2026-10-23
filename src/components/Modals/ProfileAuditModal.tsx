@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ProfileAuditResult } from '../../utils/profileAuditor';
 import { 
   X, 
@@ -33,8 +34,23 @@ export const ProfileAuditModal: React.FC<ProfileAuditModalProps> = ({
   const strokeDashoffset = circumference - (audit.totalScore / 100) * circumference;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-7 shadow-2xl overflow-hidden">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+          className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-6 sm:p-7 shadow-2xl overflow-hidden z-10"
+        >
         
         {/* Glow backdrop */}
         <div className="absolute -right-24 -top-24 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -206,15 +222,18 @@ export const ProfileAuditModal: React.FC<ProfileAuditModalProps> = ({
           <span className="text-[11px] text-slate-500">
             Real-time score updates automatically as you build.
           </span>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onClose}
             className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
           >
             Got it, back to builder
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
-  );
+  </AnimatePresence>
+);
 };
 

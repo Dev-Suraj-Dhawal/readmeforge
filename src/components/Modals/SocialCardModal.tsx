@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ProfileConfig } from '../../types';
 import { TECH_BADGES } from '../../data/techStackBadges';
 import { X, Download, Copy, Check, Share2, Sparkles, Award, ExternalLink } from 'lucide-react';
@@ -315,8 +316,23 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-5 sm:p-7 shadow-2xl overflow-hidden">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+        />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 15 }}
+          transition={{ type: 'spring', damping: 26, stiffness: 350 }}
+          className="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090d16] border border-slate-800 p-5 sm:p-7 shadow-2xl overflow-hidden z-10"
+        >
         
         {/* Glow Ambient */}
         <div className="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -388,7 +404,9 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleCopy}
               className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer flex items-center gap-1.5"
             >
@@ -403,19 +421,22 @@ export const SocialCardModal: React.FC<SocialCardModalProps> = ({
                   <span>Copy Image</span>
                 </>
               )}
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleDownload}
               className="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-md shadow-cyan-500/20 transition cursor-pointer flex items-center gap-1.5"
             >
               <Download className="w-4 h-4" />
               <span>Download 1200x630 PNG</span>
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
-  );
+  </AnimatePresence>
+);
 };
 

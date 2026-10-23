@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ProfileConfig, TemplatePreset, DEFAULT_LIVE_WIDGETS } from './types';
 import { TEMPLATE_PRESETS } from './data/templates';
+import { UI_THEMES, UIThemeItem } from './data/uiThemes';
 import { generateMarkdown } from './utils/markdownGenerator';
 import { Navbar } from './components/Navbar';
 import { TemplateGallery } from './components/TemplateGallery';
@@ -20,6 +22,7 @@ import { GitHubGuideModal } from './components/Modals/GitHubGuideModal';
 import { ProfileAuditModal } from './components/Modals/ProfileAuditModal';
 import { SocialCardModal } from './components/Modals/SocialCardModal';
 import { SnakeWorkflowModal } from './components/Modals/SnakeWorkflowModal';
+import { ThemesVaultModal } from './components/Modals/ThemesVaultModal';
 import { calculateProfileScore } from './utils/profileAuditor';
 import { cyberAudio } from './utils/audioFx';
 import { 
@@ -38,169 +41,13 @@ import {
   Layers,
   ArrowUpDown,
   Award,
-  Palette
+  Palette,
+  Shuffle
 } from 'lucide-react';
 
 const STORAGE_KEY = 'readme_forge_config_v5_avatar_studio';
 
-const GLOBAL_PALETTES = [
-  {
-    id: 'matrix',
-    name: 'Matrix Phosphor',
-    dotColor: '#00FF66',
-    bg: 'bg-emerald-500',
-    border: 'border-emerald-400',
-    config: {
-      typingColor: '00FF66',
-      avatarBorderColor: '#00FF66',
-      asciiDotColor: '#00FF66',
-      themeAesthetic: 'matrix' as const,
-      stats: {
-        statsTheme: 'matrix',
-        activityGraphTheme: 'matrix',
-        topLangsTheme: 'matrix',
-        streakTheme: 'matrix',
-        trophiesTheme: 'matrix'
-      },
-      widgets: {
-        leetcodeTheme: 'forest',
-        quoteTheme: 'matrix',
-        jokeTheme: 'matrix',
-        wakatimeTheme: 'matrix'
-      }
-    }
-  },
-  {
-    id: 'cyan',
-    name: 'Cyber Cyan',
-    dotColor: '#38BDF8',
-    bg: 'bg-cyan-500',
-    border: 'border-cyan-400',
-    config: {
-      typingColor: '38BDF8',
-      avatarBorderColor: '#38BDF8',
-      asciiDotColor: '#38BDF8',
-      themeAesthetic: 'cyberpunk' as const,
-      stats: {
-        statsTheme: 'tokyonight',
-        activityGraphTheme: 'react',
-        topLangsTheme: 'tokyonight',
-        streakTheme: 'tokyonight',
-        trophiesTheme: 'tokyonight'
-      },
-      widgets: {
-        leetcodeTheme: 'nord',
-        quoteTheme: 'tokyonight',
-        jokeTheme: 'dark',
-        wakatimeTheme: 'tokyonight'
-      }
-    }
-  },
-  {
-    id: 'synthwave',
-    name: 'Neon Synthwave',
-    dotColor: '#C084FC',
-    bg: 'bg-purple-500',
-    border: 'border-purple-400',
-    config: {
-      typingColor: 'C084FC',
-      avatarBorderColor: '#C084FC',
-      asciiDotColor: '#C084FC',
-      themeAesthetic: 'dracula' as const,
-      stats: {
-        statsTheme: 'synthwave',
-        activityGraphTheme: 'radical',
-        topLangsTheme: 'synthwave',
-        streakTheme: 'synthwave',
-        trophiesTheme: 'radical'
-      },
-      widgets: {
-        leetcodeTheme: 'unicorn',
-        quoteTheme: 'radical',
-        jokeTheme: 'radical',
-        wakatimeTheme: 'radical'
-      }
-    }
-  },
-  {
-    id: 'amber',
-    name: 'Solarized Amber',
-    dotColor: '#F59E0B',
-    bg: 'bg-amber-500',
-    border: 'border-amber-400',
-    config: {
-      typingColor: 'F59E0B',
-      avatarBorderColor: '#F59E0B',
-      asciiDotColor: '#F59E0B',
-      themeAesthetic: 'lofi' as const,
-      stats: {
-        statsTheme: 'gruvbox',
-        activityGraphTheme: 'solarized-dark',
-        topLangsTheme: 'gruvbox',
-        streakTheme: 'gruvbox',
-        trophiesTheme: 'juicy'
-      },
-      widgets: {
-        leetcodeTheme: 'dark',
-        quoteTheme: 'solarized-dark',
-        jokeTheme: 'dark',
-        wakatimeTheme: 'gruvbox'
-      }
-    }
-  },
-  {
-    id: 'crimson',
-    name: 'Tokyo Crimson',
-    dotColor: '#F43F5E',
-    bg: 'bg-rose-500',
-    border: 'border-rose-400',
-    config: {
-      typingColor: 'F43F5E',
-      avatarBorderColor: '#F43F5E',
-      asciiDotColor: '#F43F5E',
-      themeAesthetic: 'gamified' as const,
-      stats: {
-        statsTheme: 'radical',
-        activityGraphTheme: 'radical',
-        topLangsTheme: 'radical',
-        streakTheme: 'radical',
-        trophiesTheme: 'radical'
-      },
-      widgets: {
-        leetcodeTheme: 'radical',
-        quoteTheme: 'radical',
-        jokeTheme: 'radical',
-        wakatimeTheme: 'radical'
-      }
-    }
-  },
-  {
-    id: 'monochrome',
-    name: 'Stark Monochrome',
-    dotColor: '#FFFFFF',
-    bg: 'bg-white',
-    border: 'border-slate-300',
-    config: {
-      typingColor: 'FFFFFF',
-      avatarBorderColor: '#FFFFFF',
-      asciiDotColor: '#FFFFFF',
-      themeAesthetic: 'minimal' as const,
-      stats: {
-        statsTheme: 'highcontrast',
-        activityGraphTheme: 'github-compact',
-        topLangsTheme: 'highcontrast',
-        streakTheme: 'highcontrast',
-        trophiesTheme: 'flat'
-      },
-      widgets: {
-        leetcodeTheme: 'light',
-        quoteTheme: 'github_dark',
-        jokeTheme: 'dark',
-        wakatimeTheme: 'highcontrast'
-      }
-    }
-  }
-];
+const GLOBAL_PALETTES = UI_THEMES;
 
 export default function App() {
   // Initial state from localStorage or Default Cyberpunk template
@@ -221,6 +68,7 @@ export default function App() {
   const [isAuditOpen, setIsAuditOpen] = useState(false);
   const [isShareCardOpen, setIsShareCardOpen] = useState(false);
   const [isSnakeModalOpen, setIsSnakeModalOpen] = useState(false);
+  const [isThemesModalOpen, setIsThemesModalOpen] = useState(false);
   const [mobileView, setMobileView] = useState<'builder' | 'preview'>('builder');
 
   // Custom markdown buffer when in raw mode
@@ -353,6 +201,7 @@ export default function App() {
         onOpenGuide={() => setIsGuideOpen(true)}
         onOpenAudit={() => setIsAuditOpen(true)}
         onOpenShareCard={() => setIsShareCardOpen(true)}
+        onOpenThemesModal={() => setIsThemesModalOpen(true)}
         profileScore={profileAudit.totalScore}
         profileGrade={profileAudit.grade}
         onReset={handleReset}
@@ -462,21 +311,49 @@ export default function App() {
                 <span className="text-[11px] text-slate-400 hidden sm:inline">1-Click sync typing color, CRT terminal, badges & widgets</span>
               </div>
 
-              <div className="flex items-center gap-1.5">
-                {GLOBAL_PALETTES.map((pal) => (
-                  <button
-                    key={pal.id}
-                    type="button"
-                    onClick={() => handleApplyPalette(pal)}
-                    title={`Harmonize entire profile to ${pal.name}`}
-                    className="group flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 cursor-pointer transition select-none"
-                  >
-                    <span className={`w-2.5 h-2.5 rounded-full ${pal.bg} shadow-sm group-hover:scale-110 transition`} />
-                    <span className="text-[11px] font-medium text-slate-300 group-hover:text-white hidden md:inline">
-                      {pal.name}
-                    </span>
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 overflow-x-auto max-w-[280px] sm:max-w-none pb-0.5">
+                  {GLOBAL_PALETTES.slice(0, 7).map((pal) => {
+                    const isCurrent = (config.globalPalette || 'matrix').toLowerCase() === pal.id.toLowerCase();
+                    return (
+                      <motion.button
+                        key={pal.id}
+                        type="button"
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.92 }}
+                        onClick={() => handleApplyPalette(pal)}
+                        title={`Harmonize entire profile to ${pal.name}`}
+                        className={`group flex items-center gap-1.5 px-2.5 py-1 rounded-xl cursor-pointer transition select-none ${
+                          isCurrent
+                            ? 'bg-slate-800 text-white border border-cyan-400/80 shadow-sm shadow-cyan-500/20'
+                            : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <span className={`w-2.5 h-2.5 rounded-full ${pal.bgClass} shadow-sm group-hover:scale-110 transition`} />
+                        <span className="text-[11px] font-medium hidden md:inline">
+                          {pal.name.split(' ')[0]}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                {/* Framer 21 UI Themes Launcher */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    cyberAudio.playHarmonize();
+                    setIsThemesModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-fuchsia-600/20 to-purple-600/20 hover:from-fuchsia-600/30 hover:to-purple-600/30 text-fuchsia-300 hover:text-white border border-fuchsia-500/40 text-xs font-semibold cursor-pointer transition shadow-sm shadow-fuchsia-500/20 shrink-0"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-fuchsia-400" />
+                  <span>All 21 Themes</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-fuchsia-500/30 text-fuchsia-200 font-bold">
+                    21
+                  </span>
+                </motion.button>
               </div>
             </div>
 
@@ -514,8 +391,8 @@ export default function App() {
                 mobileView === 'builder' ? 'flex' : 'hidden lg:flex'
               }`}>
                 
-                {/* Builder Sub-tabs Navigation */}
-                <div className="flex items-center gap-1 overflow-x-auto pb-3 mb-5 border-b border-slate-800 text-xs">
+                {/* Builder Sub-tabs Navigation with Framer Motion layoutId */}
+                <div className="flex items-center gap-1 overflow-x-auto pb-3 mb-5 border-b border-slate-800 text-xs relative">
                   {editorTabs.map((tab) => {
                     const Icon = tab.icon;
                     const isActive = editorSubTab === tab.id;
@@ -526,12 +403,19 @@ export default function App() {
                           cyberAudio.playClick();
                           setEditorSubTab(tab.id);
                         }}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl whitespace-nowrap cursor-pointer transition-all ${
+                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl whitespace-nowrap cursor-pointer transition-colors z-10 ${
                           isActive
-                            ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-transparent'
+                            ? 'text-cyan-300 font-semibold'
+                            : 'text-slate-400 hover:text-slate-200'
                         }`}
                       >
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeSubTab"
+                            className="absolute inset-0 bg-cyan-500/20 border border-cyan-500/40 rounded-xl shadow-sm -z-10"
+                            transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                          />
+                        )}
                         <Icon className="w-3.5 h-3.5" />
                         <span>{tab.label}</span>
                       </button>
@@ -647,6 +531,14 @@ export default function App() {
         isOpen={isSnakeModalOpen}
         onClose={() => setIsSnakeModalOpen(false)}
         username={config.githubUsername}
+      />
+
+      {/* Framer Studio 21 Curated UI Themes Modal */}
+      <ThemesVaultModal
+        isOpen={isThemesModalOpen}
+        onClose={() => setIsThemesModalOpen(false)}
+        activeThemeId={config.globalPalette || 'matrix'}
+        onApplyTheme={handleApplyPalette}
       />
 
       {/* Footer */}
